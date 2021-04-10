@@ -27,16 +27,8 @@ public class RandomWorld {
             }
         }
 
-        public static void drawoutline(TETile[][] tiles, Pos p, TETile walltile, int dx, int dy) {
-            for ()
-            tiles[p.x + dx][p.y] = walltile;
-            tiles[p.x][p.y +dy] = walltile;
-            tiles[]
 
-        }
-
-
-        public static void createbox(TETile walltile, TETile floortile, Pos p, int dx, int dy) {
+        public static void createbox(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx, int dy) {
 
         }
 
