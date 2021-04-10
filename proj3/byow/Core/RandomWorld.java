@@ -35,6 +35,13 @@ public class RandomWorld {
 
         }
 
+        public static void drawrow(TETile[][] tiles, Pos p, TETile walltile, int dx) {
+            if (dx > 0) {
+                tiles[p.x][p.y] = walltile;
+                p.x += 1;
+                drawrow(tiles, p, walltile, dx - 1);
+            }
+        }
 
         public static void createbox(TETile walltile, TETile floortile, Pos p, int dx, int dy) {
 
