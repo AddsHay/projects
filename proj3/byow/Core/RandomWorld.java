@@ -32,21 +32,27 @@ public class RandomWorld {
             drawrow(tiles, p.x, p.y + dy - 1, walltile, dx);
             drawcolumn(tiles, p.x, p.y, walltile, dy);
             drawcolumn(tiles, p.x + dx - 1, p.y, walltile, dy);
+            fillroom(tiles, p.x + 1, p.y + 1, floortile, dx - 2, dy - 2);
         }
 
         public static void drawrow(TETile[][] tiles, int x, int y, TETile walltile, int dx) {
             if (dx > 0) {
                 tiles[x][y] = walltile;
-                x += 1;
-                drawrow(tiles, x, y, walltile, dx - 1);
+                drawrow(tiles, x + 1, y, walltile, dx - 1);
             }
         }
 
         public static void drawcolumn(TETile[][] tiles, int x, int y, TETile walltile, int dy) {
             if (dy > 0) {
                 tiles[x][y] = walltile;
-                y += 1;
-                drawrow(tiles, x, y, walltile, dy - 1);
+                drawrow(tiles, x, y + 1, walltile, dy - 1);
+            }
+        }
+
+        public static void fillroom(TETile[][] tiles, int x, int y, TETile floortile, int dx, int dy) {
+            if (dy > 0) {
+                drawrow(tiles, x, y, floortile, dx);
+                fillroom(tiles, x, y + 1, floortile, dy - 1);
             }
         }
 
@@ -75,6 +81,8 @@ public class RandomWorld {
 
             TETile[][] randomTiles = new TETile[WIDTH][HEIGHT];
             fillWithRandomTiles(randomTiles);
+            Pos p = new Pos(10, 10);
+            createbox(randomTiles, Tileset.WALL, Tileset.FLOOR, p, 30, 30);
 
             ter.renderFrame(randomTiles);
         }
