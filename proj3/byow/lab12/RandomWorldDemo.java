@@ -18,8 +18,7 @@ public class RandomWorldDemo {
 
     /**
      * Fills the given 2D array of tiles with RANDOM tiles.
-     * @param tiles
-     */
+     * @param tiles*/
     public static void fillWithRandomTiles(TETile[][] tiles) {
         int height = tiles[0].length;
         int width = tiles.length;
