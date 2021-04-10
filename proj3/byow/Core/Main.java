@@ -1,7 +1,7 @@
 package byow.Core;
 
 /** This is the main entry point for the program. This class simply parses
- *  the command line inputs, and lets the byow.Core.Engine class take over
+ *  the command line inputs, and lets the byow.Core.Engine class take over Derelict!
  *  in either keyboard or input string mode. ewifvbkdhbabvdhwakbkh
  */
 public class Main {
