@@ -39,7 +39,7 @@ public class RandomWorld {
     public static void drawcolumn(TETile[][] tiles, int x, int y, TETile walltile, int dy) {
         if (dy > 0) {
             tiles[x][y] = walltile;
-            drawrow(tiles, x, y + 1, walltile, dy - 1);
+            drawcolumn(tiles, x, y + 1, walltile, dy - 1);
         }
     }
     public static void fillroom(TETile[][] tiles, int x, int y, TETile floortile, int dx, int dy) {
