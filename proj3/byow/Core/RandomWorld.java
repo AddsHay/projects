@@ -28,7 +28,21 @@ public class RandomWorld {
         }
 
 
+<<<<<<< HEAD
         public static void createbox(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx, int dy) {
+=======
+        }
+
+        public static void drawrow(TETile[][] tiles, Pos p, TETile walltile, int dx) {
+            if (dx > 0) {
+                tiles[p.x][p.y] = walltile;
+                p.x += 1;
+                drawrow(tiles, p, walltile, dx - 1);
+            }
+        }
+
+        public static void createbox(TETile walltile, TETile floortile, Pos p, int dx, int dy) {
+>>>>>>> ffb325b7d04d024c43b7c5c5a12ebb53a6a0b437
 
         }
 
