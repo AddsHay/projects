@@ -23,6 +23,7 @@ public class RandomWorld {
             return new Pos(oldx + this.x, oldy + this.y);
         }
     }
+
     public static void createbox(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx, int dy) {
         drawrow(tiles, p.x, p.y, walltile, dx);
         drawrow(tiles, p.x, p.y + dy - 1, walltile, dx);
@@ -30,28 +31,45 @@ public class RandomWorld {
         drawcolumn(tiles, p.x + dx - 1, p.y, walltile, dy);
         fillroom(tiles, p.x + 1, p.y + 1, floortile, dx - 2, dy - 2);
     }
+
+    public static void createhallvert(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dy) {
+        drawcolumn(tiles, p.x - 1, p.y, walltile, dy);
+        drawcolumn(tiles, p.x, p.y, floortile, dy);
+        drawcolumn(tiles, p.x + 1, p.y, walltile, dy);
+    }
+
+    public static void createhallhor(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx) {
+        drawrow(tiles, p.x, p.y - 1, walltile, dx);
+        drawrow(tiles, p.x, p.y, floortile, dx);
+        drawrow(tiles, p.x, p.y + 1, walltile, dx);
+    }
+
     public static void drawrow(TETile[][] tiles, int x, int y, TETile walltile, int dx) {
         if (dx > 0) {
             tiles[x][y] = walltile;
             drawrow(tiles, x + 1, y, walltile, dx - 1);
         }
     }
+
     public static void drawcolumn(TETile[][] tiles, int x, int y, TETile walltile, int dy) {
         if (dy > 0) {
             tiles[x][y] = walltile;
             drawcolumn(tiles, x, y + 1, walltile, dy - 1);
         }
     }
+
     public static void fillroom(TETile[][] tiles, int x, int y, TETile floortile, int dx, int dy) {
         if (dy > 0) {
             drawrow(tiles, x, y, floortile, dx);
-            fillroom(tiles, x, y + 1, floortile, dy - 1);
+            fillroom(tiles, x, y + 1, floortile, dx,dy - 1);
         }
     }
+
     /** Picks a RANDOM tile with a 33% change of being
      *  a wall, 33% chance of being a flower, and 33%
      *  chance of being empty space.
      */
+
     private static TETile randomTile() {
         int tileNum = RANDOM.nextInt(3);
         switch (tileNum) {
@@ -61,6 +79,7 @@ public class RandomWorld {
             default: return Tileset.NOTHING;
         }
     }
+
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
@@ -69,6 +88,8 @@ public class RandomWorld {
         fillWithRandomTiles(randomTiles);
         Pos p = new Pos(10, 10);
         createbox(randomTiles, Tileset.WALL, Tileset.FLOOR, p, 30, 30);
+        createhallhor(randomTiles, Tileset.WALL, Tileset.FLOOR, p, 15);
+        createhallvert(randomTiles, Tileset.WALL, Tileset.FLOOR, p, 25);
 
         ter.renderFrame(randomTiles);
     }
