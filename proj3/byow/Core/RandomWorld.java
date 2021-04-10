@@ -27,22 +27,28 @@ public class RandomWorld {
             }
         }
 
-
-<<<<<<< HEAD
         public static void createbox(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx, int dy) {
-=======
+            drawrow(tiles, p.x, p.y, walltile, dx);
+            drawrow(tiles, p.x, p.y + dy - 1, walltile, dx);
+            drawcolumn(tiles, p.x, p.y, walltile, dy);
+            drawcolumn(tiles, p.x + dx - 1, p.y, walltile, dy);
         }
 
-        public static void drawrow(TETile[][] tiles, Pos p, TETile walltile, int dx) {
+        public static void drawrow(TETile[][] tiles, int x, int y, TETile walltile, int dx) {
             if (dx > 0) {
-                tiles[p.x][p.y] = walltile;
-                p.x += 1;
-                drawrow(tiles, p, walltile, dx - 1);
+                tiles[x][y] = walltile;
+                x += 1;
+                drawrow(tiles, x, y, walltile, dx - 1);
             }
         }
 
-        public static void createbox(TETile walltile, TETile floortile, Pos p, int dx, int dy) {
->>>>>>> ffb325b7d04d024c43b7c5c5a12ebb53a6a0b437
+        public static void drawcolumn(TETile[][] tiles, int x, int y, TETile walltile, int dy) {
+            if (dy > 0) {
+                tiles[x][y] = walltile;
+                y += 1;
+                drawrow(tiles, x, y, walltile, dy - 1);
+            }
+        }
 
         }
 
