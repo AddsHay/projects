@@ -65,6 +65,8 @@ public class RandomWorld {
         }
     }
 
+    public static void cap()
+
     /** Picks a RANDOM tile with a 33% change of being
      *  a wall, 33% chance of being a flower, and 33%
      *  chance of being empty space.
