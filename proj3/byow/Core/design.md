@@ -1,21 +1,15 @@
-based off Random World demo
 
-create two constructors for hallway with random length each time called
-and room with random dimensions each time called
+Do we want rooms to be able to be built off rooms?
 
-Separate constructor for vertical and horizontal hallways?
+Function that chooses random wall tile on each structure 
 
-What should be the max length of hallway and dimension of room?
+using that random tile as the position, we call a random one of our three build functions 
+from that spot.
 
-function that starts with a random room near the middle of the board
-and builds hallways and rooms off it from a random wall tile in a chain like way, ie
-random room/hallway spawns from the wall of the start room, and 
-then random room/hallway spawns from that random room/hallway
+how to deal with conflicts:
+if a new build would overlap an existing build, cancel it and do another random call
+ 
 
-Do we want more than 1 random room/hallway to spawn from the wall of 
-a single room/hallway?
+Do a random number of those build calls in a certain range
 
-if spawns inwardly, any tile where there is floor and wall is meant to be built will stay 
-floor (floor always overrides wall, useful for new hallways)
-
-When to stop spawning new rooms/hallways? 
+If you have x failed build calls in a row, end early

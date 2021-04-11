@@ -15,10 +15,12 @@ public class RandomWorld {
     private static class Pos {
         int x;
         int y;
+
         Pos(int x, int y) {
             this.x = x;
             this.y = y;
         }
+
         public Pos change(int oldx, int oldy) {
             return new Pos(oldx + this.x, oldy + this.y);
         }
@@ -51,6 +53,12 @@ public class RandomWorld {
             }
             drawrow(tiles, x + 1, y, tile, dx - 1);
         }
+        if (dx < 0) {
+            if (tiles[x][y] != Tileset.FLOOR) {
+                tiles[x][y] = tile;
+            }
+            drawrow(tiles, x - 1, y, tile, dx + 1);
+        }
     }
 
     private static void drawcolumn(TETile[][] tiles, int x, int y, TETile tile, int dy) {
@@ -60,12 +68,18 @@ public class RandomWorld {
             }
             drawcolumn(tiles, x, y + 1, tile, dy - 1);
         }
+        if (dy < 0) {
+            if (tiles[x][y] != Tileset.FLOOR) {
+                tiles[x][y] = tile;
+            }
+            drawcolumn(tiles, x, y - 1, tile, dy + 1);
+        }
     }
 
     private static void fillroom(TETile[][] tiles, int x, int y, TETile floortile, int dx, int dy) {
         if (dy > 0) {
             drawrow(tiles, x, y, floortile, dx);
-            fillroom(tiles, x, y + 1, floortile, dx,dy - 1);
+            fillroom(tiles, x, y + 1, floortile, dx, dy - 1);
         }
     }
 
@@ -91,7 +105,6 @@ public class RandomWorld {
         return switch (tileNum) {
             case 0 -> Tileset.WALL;
             case 1 -> Tileset.FLOWER;
-            case 2 -> Tileset.NOTHING;
             default -> Tileset.NOTHING;
         };
     }
@@ -119,7 +132,7 @@ public class RandomWorld {
         createroom(tiles, Tileset.WALL, Tileset.FLOOR, p, 30, 30);
         p = new Pos(44, 19);
         createhallvert(tiles, Tileset.WALL, Tileset.FLOOR, p, 25);
-        p = new Pos(35, 20);
+        p = new Pos(35, 19);
         createhallhor(tiles, Tileset.WALL, Tileset.FLOOR, p, 9);
 
         cap(tiles);
