@@ -103,22 +103,62 @@ public class RandomWorld {
     public static void randomexit(TETile[][] tiles, Pos p, int dx, int dy) {
         int check = uniform(RANDOM, -dx - dy + 4, dx + dy - 4);
         if (check < -dx + 2) {
-
+            p.y += check + dx - 2;
         } else if (check < 0) {
-
+            p.x += check;
         } else if (check > dx - 2) {
-
+            p.y += check - dx + 2;
+            p.x += dx - 1;
         } else if (check > 0) {
-
+            p.x += check;
+            p.y += dy - 1;
         } else {
             randomexit(tiles, p, dx, dy)
         }
     }
 
-    /** Picks a RANDOM tile with a 33% change of being
-     *  a wall, 33% chance of being a flower, and 33%
-     *  chance of being empty space.
-     */
+    public static void randombuilder(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx, int dy) {
+        int type;
+        if (tiles[p.x - 1][p.y] == Tileset.WALL && tiles[p.x + 1][p.y] == Tileset.WALL) {
+            if (tiles[p.x][p.y - 1] == Tileset.FLOOR) {
+                // Vertically up
+                type = 1;
+            } else if (tiles[p.x][p.y + 1] == Tileset.FLOOR) {
+                // Vertically down
+                type = -1;
+            }
+        } else if (tiles[p.x][p.y - 1] == Tileset.WALL && tiles[p.x][p.y + 1] == Tileset.WALL) {
+            if (tiles[p.x - 1][p.y] == Tileset.FLOOR) {
+                // Horizontally right
+                type = 2;
+            } else if (tiles[p.x + 1][p.y] == Tileset.FLOOR) {
+                // Horizontally left
+                type = -2;
+            }
+        }
+        if (uniform(RANDOM, 2) == 0) {
+            // room
+            if (abs(type) == 1) {
+                // upward/downward room
+            } else if (abs(type) == 2) {
+                // rightward/leftward room
+            }
+        } else {
+            // hall
+            if (abs(type) == 1) {
+                // upward/downward hall
+                createhallvert(tiles, walltile, floortile, p, dy * type)
+            } else if (abs(type) == 2) {
+                // rightward/leftward hall
+                createhallhor(tiles, walltile, floortile, p, dx * type * 0.5)
+            }
+        }
+    }
+
+        /** Picks a RANDOM tile with a 33% change of being
+         *  a wall, 33% chance of being a flower, and 33%
+         *  chance of being empty space.
+         */
     private static TETile randomTile() {
         int tileNum = RANDOM.nextInt(3);
         return switch (tileNum) {
