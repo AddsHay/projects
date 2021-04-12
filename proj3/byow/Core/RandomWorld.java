@@ -100,6 +100,21 @@ public class RandomWorld {
         }
     }
 
+    public static void randomexit(TETile[][] tiles, Pos p, int dx, int dy) {
+        int check = uniform(RANDOM, -dx - dy + 4, dx + dy - 4);
+        if (check < -dx + 2) {
+
+        } else if (check < 0) {
+
+        } else if (check > dx - 2) {
+
+        } else if (check > 0) {
+
+        } else {
+            randomexit(tiles, p, dx, dy)
+        }
+    }
+
     /** Picks a RANDOM tile with a 33% change of being
      *  a wall, 33% chance of being a flower, and 33%
      *  chance of being empty space.
