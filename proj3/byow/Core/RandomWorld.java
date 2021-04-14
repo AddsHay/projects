@@ -115,6 +115,7 @@ public class RandomWorld {
         } else {
             randomexit(tiles, p, dx, dy);
         }
+        tiles[p.x][p.y] = Tileset.FLOOR;
     }
 
     public static void randombuilder(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx, int dy) {
@@ -168,8 +169,15 @@ public class RandomWorld {
         }
     }
 
-    public int createdimensions(int p, int d) {
-
+    public int createdimension(int p, int w) {
+        int d = RandomUtils.uniform(RANDOM, 3, 10);
+        if (p + d > w - 1) {
+            return w - p - 2;
+        } else if (p + d < 0) {
+            return - p;
+        } else {
+            return d;
+        }
     }
 
 
