@@ -3,7 +3,7 @@ package byow.Core;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
-
+import java.lang.Math;
 import java.util.Random;
 
 public class RandomWorld {
@@ -100,10 +100,65 @@ public class RandomWorld {
         }
     }
 
-    /** Picks a RANDOM tile with a 33% change of being
-     *  a wall, 33% chance of being a flower, and 33%
-     *  chance of being empty space.
-     */
+    public static void randomexit(TETile[][] tiles, Pos p, int dx, int dy) {
+        int check = RandomUtils.uniform(RANDOM, -dx - dy + 4, dx + dy - 4);
+        if (check < -dx + 2) {
+            p.y += check + dx - 2;
+        } else if (check < 0) {
+            p.x += check;
+        } else if (check > dx - 2) {
+            p.y += check - dx + 2;
+            p.x += dx - 1;
+        } else if (check > 0) {
+            p.x += check;
+            p.y += dy - 1;
+        } else {
+            randomexit(tiles, p, dx, dy);
+        }
+    }
+
+    public static void randombuilder(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx, int dy) {
+        int type = 0;
+        if (tiles[p.x - 1][p.y] == Tileset.WALL && tiles[p.x + 1][p.y] == Tileset.WALL) {
+            if (tiles[p.x][p.y - 1] == Tileset.FLOOR) {
+                // Vertically up
+                type = 1;
+            } else if (tiles[p.x][p.y + 1] == Tileset.FLOOR) {
+                // Vertically down
+                type = -1;
+            }
+        } else if (tiles[p.x][p.y - 1] == Tileset.WALL && tiles[p.x][p.y + 1] == Tileset.WALL) {
+            if (tiles[p.x - 1][p.y] == Tileset.FLOOR) {
+                // Horizontally right
+                type = 2;
+            } else if (tiles[p.x + 1][p.y] == Tileset.FLOOR) {
+                // Horizontally left
+                type = -2;
+            }
+        }
+        int check = RandomUtils.uniform(RANDOM, 0, 2);
+        if (check == 0) {
+            // room
+            if (Math.abs(type) == 1) {
+                // upward/downward room
+                createroom(tiles, walltile, floortile, p, dx * type, dy * type);
+            } else if (Math.abs(type) == 2) {
+                // rightward/leftward room
+                createroom(tiles, walltile, floortile, p, dx * type / 2, dy * type / 2);
+            }
+        } else {
+            // hall
+            if (Math.abs(type) == 1) {
+                // upward/downward hall
+                createhallvert(tiles, walltile, floortile, p, dy * type);
+            } else if (Math.abs(type) == 2) {
+                // rightward/leftward hall
+                createhallhor(tiles, walltile, floortile, p, dx * type / 2);
+            }
+        }
+    }
+
+
     private static TETile randomTile() {
         int tileNum = RANDOM.nextInt(3);
         return switch (tileNum) {
@@ -123,11 +178,23 @@ public class RandomWorld {
         }
     }
 
+    public int createdimensions(int p, int d) {
+
+    }
+
+
     public static void drawworld(TETile tiles) {
+        fillWithNothing(tiles);
         int opcount = RandomUtils.uniform(RANDOM, 10, 50);
         Pos p = new Pos(RandomUtils.uniform(RANDOM, 10, WIDTH - 10), RandomUtils.uniform(RANDOM, 10, HEIGHT - 10));
-
-
+        int dx = RandomUtils.uniform(RANDOM, )
+        int dy =
+        for (int z = 0; z < opcount; z++) {
+            randomexit(tiles, p, dx, dy);
+            int dx =
+            int dy =
+                    randombuilder(tiles, Tileset.WALL, Tileset.FLOOR, p, dx, dy);
+        }
     }
 
 
