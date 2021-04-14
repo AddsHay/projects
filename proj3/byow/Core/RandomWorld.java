@@ -9,7 +9,7 @@ import java.util.Random;
 public class RandomWorld {
     private static final int WIDTH = 50;
     private static final int HEIGHT = 50;
-    private static final long SEED = 2873123;
+    private static final long SEED = 2873124;
     private static final Random RANDOM = new Random(SEED);
 
     private static class Pos {
@@ -101,21 +101,39 @@ public class RandomWorld {
     }
 
     public static void randomexit(TETile[][] tiles, Pos p, int dx, int dy) {
-        int check = RandomUtils.uniform(RANDOM, -dx - dy + 4, dx + dy - 4);
+        int check = RandomUtils.uniform(RANDOM, -Math.abs(dx) - Math.abs(dy) + 4, Math.abs(dx) + Math.abs(dy) - 4);
         if (check < -dx + 2) {
-            p.y += check + dx - 2;
+            if (p.x - 3 > 0) {
+                p.y += check + dy - 2;
+            } else {
+                check = 0;
+            }
         } else if (check < 0) {
-            p.x += check;
+            if (p.y - 3 > 0) {
+                p.x += check;
+            } else {
+                check = 0;
+            }
         } else if (check > dx - 2) {
-            p.y += check - dx + 2;
-            p.x += dx - 1;
+            if (p.x + dx + 3 < WIDTH) {
+                p.y += check - dy + 2;
+                p.x += dx - 1;
+            } else {
+                check = 0;
+            }
         } else if (check > 0) {
-            p.x += check;
-            p.y += dy - 1;
-        } else {
-            randomexit(tiles, p, dx, dy);
+            if (p.y + dy + 3 < HEIGHT) {
+                p.x += check;
+                p.y += dy - 1;
+            } else {
+                check = 0;
+            }
         }
-        tiles[p.x][p.y] = Tileset.FLOOR;
+        if (check == 0) {
+            randomexit(tiles, p, dx, dy);
+        } else {
+            tiles[p.x][p.y] = Tileset.FLOOR;
+        }
     }
 
     public static void randombuilder(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx, int dy) {
@@ -169,7 +187,8 @@ public class RandomWorld {
         }
     }
 
-    public int createdimension(int p, int w) {
+    /** Return the maximum dimension without going over */
+    public static int createdimension(int p, int w) {
         int d = RandomUtils.uniform(RANDOM, 3, 10);
         if (p + d > w - 1) {
             return w - p - 2;
@@ -181,17 +200,18 @@ public class RandomWorld {
     }
 
 
-    public static void drawworld(TETile[][] tiles) {
+    public static void drawworld(TETile[][] tiles, TETile walltile, TETile floortile) {
         fillWithNothing(tiles);
         int opcount = RandomUtils.uniform(RANDOM, 10, 50);
         Pos p = new Pos(RandomUtils.uniform(RANDOM, 10, WIDTH - 10), RandomUtils.uniform(RANDOM, 10, HEIGHT - 10));
-        int dx = RandomUtils.uniform(RANDOM, )
-        int dy =
+        int dx = createdimension(p.x, WIDTH);
+        int dy = createdimension(p.y, HEIGHT);
+        createroom(tiles, walltile, floortile, p, dx, dy);
         for (int z = 0; z < opcount; z++) {
             randomexit(tiles, p, dx, dy);
-            int dx =
-            int dy =
-                    randombuilder(tiles, Tileset.WALL, Tileset.FLOOR, p, dx, dy);
+            dx = createdimension(p.x, WIDTH);
+            dy = createdimension(p.y, HEIGHT);
+            randombuilder(tiles, walltile, floortile, p, dx, dy);
         }
     }
 
@@ -199,6 +219,7 @@ public class RandomWorld {
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
         TETile[][] tiles = new TETile[WIDTH][HEIGHT];
+        /**
         fillWithNothing(tiles);
         Pos p = new Pos(10, 10);
         createroom(tiles, Tileset.WALL, Tileset.FLOOR, p, 15, 15);
@@ -208,6 +229,8 @@ public class RandomWorld {
         createhallvert(tiles, Tileset.WALL, Tileset.FLOOR, p, -9);
         createhallhor(tiles, Tileset.WALL, Tileset.FLOOR, p, -9);
         cap(tiles);
+         */
+        drawworld(tiles, Tileset.WALL, Tileset.FLOOR);
 
         ter.renderFrame(tiles);
     }
