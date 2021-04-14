@@ -3,7 +3,7 @@ package byow.Core;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
-
+import java.lang.Math;
 import java.util.Random;
 
 public class RandomWorld {
@@ -101,7 +101,7 @@ public class RandomWorld {
     }
 
     public static void randomexit(TETile[][] tiles, Pos p, int dx, int dy) {
-        int check = uniform(RANDOM, -dx - dy + 4, dx + dy - 4);
+        int check = RandomUtils.uniform(RANDOM, -dx - dy + 4, dx + dy - 4);
         if (check < -dx + 2) {
             p.y += check + dx - 2;
         } else if (check < 0) {
@@ -113,12 +113,12 @@ public class RandomWorld {
             p.x += check;
             p.y += dy - 1;
         } else {
-            randomexit(tiles, p, dx, dy)
+            randomexit(tiles, p, dx, dy);
         }
     }
 
     public static void randombuilder(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx, int dy) {
-        int type;
+        int type = 0;
         if (tiles[p.x - 1][p.y] == Tileset.WALL && tiles[p.x + 1][p.y] == Tileset.WALL) {
             if (tiles[p.x][p.y - 1] == Tileset.FLOOR) {
                 // Vertically up
@@ -136,66 +136,94 @@ public class RandomWorld {
                 type = -2;
             }
         }
-        if (uniform(RANDOM, 2) == 0) {
+        int check = RandomUtils.uniform(RANDOM, 0, 2);
+        if (check == 0) {
             // room
-            if (abs(type) == 1) {
+            if (Math.abs(type) == 1) {
                 // upward/downward room
-            } else if (abs(type) == 2) {
+                createroom(tiles, walltile, floortile, p, dx * type, dy * type);
+            } else if (Math.abs(type) == 2) {
                 // rightward/leftward room
+                createroom(tiles, walltile, floortile, p, dx * type / 2, dy * type / 2);
             }
         } else {
             // hall
-            if (abs(type) == 1) {
+            if (Math.abs(type) == 1) {
                 // upward/downward hall
-                createhallvert(tiles, walltile, floortile, p, dy * type)
-            } else if (abs(type) == 2) {
+                createhallvert(tiles, walltile, floortile, p, dy * type);
+            } else if (Math.abs(type) == 2) {
                 // rightward/leftward hall
-                createhallhor(tiles, walltile, floortile, p, dx * type * 0.5)
+                createhallhor(tiles, walltile, floortile, p, dx * type / 2);
+                if (RandomUtils.uniform(RANDOM, 2) == 0) {
+                    // room
+                    if (Math.abs(type) == 1) {
+                        // upward/downward room
+                        createroom(tiles, walltile, floortile, p, dx * type, dy * type);
+                    } else if (Math.abs(type) == 2) {
+                        // rightward/leftward room
+                        createroom(tiles, walltile, floortile, p, dx * type / 2, dy * type / 2);
+                    }
+                } else {
+                    // hall
+                    if (Math.abs(type) == 1) {
+                        // upward/downward hall
+                        createhallvert(tiles, walltile, floortile, p, dy * type);
+                    } else if (Math.abs(type) == 2) {
+                        // rightward/leftward hall
+                        createhallhor(tiles, walltile, floortile, p, dx * type / 2);
+
+                    }
+                }
+            }
+
+            public static void fillWithNothing(TETile[][] tiles) {
+                int height = tiles[0].length;
+                int width = tiles.length;
+                for (int x = 0; x < width; x += 1) {
+                    for (int y = 0; y < height; y += 1) {
+                        tiles[x][y] = Tileset.NOTHING;
+                    }
+                }
+            }
+
+            public int createdimensions(int p, int d) {
+
+            }
+
+
+            public static void drawworld(TETile tiles) {
+                fillWithNothing(tiles);
+                int opcount = RandomUtils.uniform(RANDOM, 10, 50);
+                Pos p = new Pos(RandomUtils.uniform(RANDOM, 10, WIDTH - 10), RandomUtils.uniform(RANDOM, 10, HEIGHT - 10));
+                int dx = RandomUtils.uniform(RANDOM, )
+                int dy =
+                for (int z = 0; z < opcount; z++) {
+                    randomexit(tiles, p, dx, dy);
+                    int dx =
+                    int dy =
+                            randombuilder(tiles, Tileset.WALL, Tileset.FLOOR, p, dx, dy);
+                }
+            }
+
+
+            public static void main(String[] args) {
+                TERenderer ter = new TERenderer();
+                ter.initialize(WIDTH, HEIGHT);
+
+                TETile[][] tiles = new TETile[WIDTH][HEIGHT];
+
+                fillWithNothing(tiles);
+
+                Pos p = new Pos(10, 10);
+                createroom(tiles, Tileset.WALL, Tileset.FLOOR, p, 15, 15);
+                p = new Pos(30, 20);
+                createhallvert(tiles, Tileset.WALL, Tileset.FLOOR, p, 9);
+                createhallhor(tiles, Tileset.WALL, Tileset.FLOOR, p, 9);
+                createhallvert(tiles, Tileset.WALL, Tileset.FLOOR, p, -9);
+                createhallhor(tiles, Tileset.WALL, Tileset.FLOOR, p, -9);
+
+                cap(tiles);
+
+                ter.renderFrame(tiles);
             }
         }
-    }
-
-        /** Picks a RANDOM tile with a 33% change of being
-         *  a wall, 33% chance of being a flower, and 33%
-         *  chance of being empty space.
-         */
-    private static TETile randomTile() {
-        int tileNum = RANDOM.nextInt(3);
-        return switch (tileNum) {
-            case 0 -> Tileset.WALL;
-            case 1 -> Tileset.FLOWER;
-            default -> Tileset.NOTHING;
-        };
-    }
-
-    public static void fillWithNothing(TETile[][] tiles) {
-        int height = tiles[0].length;
-        int width = tiles.length;
-        for (int x = 0; x < width; x += 1) {
-            for (int y = 0; y < height; y += 1) {
-                tiles[x][y] = Tileset.NOTHING;
-            }
-        }
-    }
-
-
-    public static void main(String[] args) {
-        TERenderer ter = new TERenderer();
-        ter.initialize(WIDTH, HEIGHT);
-
-        TETile[][] tiles = new TETile[WIDTH][HEIGHT];
-
-        fillWithNothing(tiles);
-
-        Pos p = new Pos(10, 10);
-        createroom(tiles, Tileset.WALL, Tileset.FLOOR, p, 30, 30);
-        p = new Pos(44, 19);
-        createhallvert(tiles, Tileset.WALL, Tileset.FLOOR, p, 25);
-        p = new Pos(35, 19);
-        createhallhor(tiles, Tileset.WALL, Tileset.FLOOR, p, 9);
-
-        cap(tiles);
-
-        ter.renderFrame(tiles);
-    }
-}
