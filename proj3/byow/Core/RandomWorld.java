@@ -123,6 +123,13 @@ public class RandomWorld {
         }
     }
 
+    public static void drawworld(TETile tiles) {
+        int opcount = RandomUtils.uniform(RANDOM, 10, 50);
+        Pos p = new Pos(RandomUtils.uniform(RANDOM, 10, WIDTH - 10), RandomUtils.uniform(RANDOM, 10, HEIGHT - 10));
+
+
+    }
+
 
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
@@ -133,11 +140,12 @@ public class RandomWorld {
         fillWithNothing(tiles);
 
         Pos p = new Pos(10, 10);
-        createroom(tiles, Tileset.WALL, Tileset.FLOOR, p, 30, 30);
-        p = new Pos(44, 19);
-        createhallvert(tiles, Tileset.WALL, Tileset.FLOOR, p, 25);
-        p = new Pos(35, 19);
+        createroom(tiles, Tileset.WALL, Tileset.FLOOR, p, 15, 15);
+        p = new Pos(30, 20);
+        createhallvert(tiles, Tileset.WALL, Tileset.FLOOR, p, 9);
         createhallhor(tiles, Tileset.WALL, Tileset.FLOOR, p, 9);
+        createhallvert(tiles, Tileset.WALL, Tileset.FLOOR, p, -9);
+        createhallhor(tiles, Tileset.WALL, Tileset.FLOOR, p, -9);
 
         cap(tiles);
 
