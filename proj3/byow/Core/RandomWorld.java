@@ -154,29 +154,37 @@ public class RandomWorld {
             } else if (Math.abs(type) == 2) {
                 // rightward/leftward hall
                 createhallhor(tiles, walltile, floortile, p, dx * type / 2);
+        if (RandomUtils.uniform(RANDOM, 2) == 0) {
+            // room
+            if (Math.abs(type) == 1) {
+                // upward/downward room
+                createroom(tiles, walltile, floortile, p, dx * type, dy * type);
+            } else if (Math.abs(type) == 2) {
+                // rightward/leftward room
+                createroom(tiles, walltile, floortile, p, dx * type / 2, dy * type / 2);
+            }
+        } else {
+            // hall
+            if (Math.abs(type) == 1) {
+                // upward/downward hall
+                createhallvert(tiles, walltile, floortile, p, dy * type);
+            } else if (Math.abs(type) == 2) {
+                // rightward/leftward hall
+                createhallhor(tiles, walltile, floortile, p, dx * type / 2);
+
             }
         }
     }
 
-
-    private static TETile randomTile() {
-        int tileNum = RANDOM.nextInt(3);
-        return switch (tileNum) {
-            case 0 -> Tileset.WALL;
-            case 1 -> Tileset.FLOWER;
-            default -> Tileset.NOTHING;
-        };
-    }
-
-    public static void fillWithNothing(TETile[][] tiles) {
-        int height = tiles[0].length;
-        int width = tiles.length;
-        for (int x = 0; x < width; x += 1) {
-            for (int y = 0; y < height; y += 1) {
-                tiles[x][y] = Tileset.NOTHING;
+            public static void fillWithNothing(TETile[][] tiles) {
+                int height = tiles[0].length;
+                int width = tiles.length;
+                for (int x = 0; x < width; x += 1) {
+                    for (int y = 0; y < height; y += 1) {
+                        tiles[x][y] = Tileset.NOTHING;
+                    }
+                }
             }
-        }
-    }
 
     public int createdimensions(int p, int d) {
 
