@@ -219,12 +219,13 @@ public class RandomWorld {
     public static void drawbuild(TETile[][] tiles, TETile walltile, TETile floortile) {
         fillWithNothing(tiles);
         Pos p = new Pos(RandomUtils.uniform(RANDOM, 10, WIDTH - 10), RandomUtils.uniform(RANDOM, 10, HEIGHT - 10));
+        Pos pz = new Pos(-1, -1);
         int dx = createdimension(p.x, WIDTH);
         int dy = createdimension(p.y, HEIGHT);
         Steps end = new Steps(null, null, null, null, null,
-                null, 0, 0, 0, 0, "x");
+                null, null, 0, 0, 0, "x");
         Steps base = new Steps(end, end, tiles, walltile, floortile,
-                p, dx, dy, 0, 0, "room");
+                p, pz, dx, dy, 0, "room");
         end.next = base;
         end.last = base;
         bloom(base);
@@ -237,17 +238,25 @@ public class RandomWorld {
         // Build new structure with next list item with bloom(next stuff)
         //
         // Make the given structure
+        // (Note that this shifts P to the bottom-left corner)
         switch (base.structure) {
-            case "room": break;
-            case "horizontal": break;
-            case "vertical": break;
-            default: base.zero = 1;
+            case "room":
+                // replace these later?
+                createroom(base.tile, base.wall, base.floor, base.p, base.dx, base.dy);
+                break;
+            case "horizontal":
+                createhallhor(base.tile, base.wall, base.floor, base.p, base.dx);
+                break;
+            case "vertical":
+                createhallvert(base.tile, base.wall, base.floor, base.p, base.dy);
+                break;
+            default:
+                base.zero = 1;
         }
         // Add new Steps
         if (RandomUtils.uniform(RANDOM) > base.zero) {
             for (int i = RandomUtils.uniform(RANDOM, 1, 4); i > 0; i--) {
-                Steps next = new Steps(base.last, base.last.last, base.tile, base.wall, base.floor,
-                        null, 0, 0, 0, 0, "x");
+                Steps next = stepmaker(base);
                 base.last.last.next = next;
                 base.last.last = next;
             }
@@ -265,25 +274,118 @@ public class RandomWorld {
         private TETile wall;
         private TETile floor;
         private Pos p;
+        private Pos pz;
         private int dx;
         private int dy;
-        private int dz;
         private double zero;
         private String structure;
         Steps(Steps nx, Steps ls, TETile[][] tls, TETile wltl, TETile fltl,
-              Pos ps, int drx, int dry, int drz, double zro, String str) {
+              Pos ps, Pos psz, int drx, int dry, double zro, String str) {
             next = nx;
             last = ls;
             tile = tls;
             wall = wltl;
             floor = fltl;
             p = ps;
+            pz = psz;
             dx = drx;
             dy = dry;
-            dz = drz;
             zero = zro;
             structure = str;
         }
+    }
+
+    private static Steps stepmaker(Steps base) {
+        Steps a = new Steps(base.last, base.last.last, base.tile, base.wall, base.floor,
+                base.p, base.pz, 0, 0, 0, "x");
+        if (base.structure.equals("room")) {
+            int x = RandomUtils.uniform(RANDOM, Math.abs(base.dx) + Math.abs(base.dy) - 4);
+            if (x < base.dx - 2) {
+                // Exit top or bottom
+                a.pz.x = base.p.x + x + 1;
+                a.pz.y = base.p.y;
+                double f = RandomUtils.uniform(RANDOM);
+                if (f < 0.2) {
+                    a.structure = "room";
+                    a.dx = RandomUtils.uniform(RANDOM, 3, 10);
+                    a.dy = RandomUtils.uniform(RANDOM, 3, 10);
+                    a.p.x = a.pz.x - RandomUtils.uniform(RANDOM, 1, a.dx - 1);
+                } else {
+                    a.structure = "vertical";
+                    a.dy = RandomUtils.uniform(RANDOM, 3, 16);
+                }
+                if (RandomUtils.uniform(RANDOM, 2) > 0) {
+                    a.pz.y += base.dy - 1;
+                } else {
+                    a.dy *= -1;
+                }
+                a.p.y = a.pz.y;
+            } else {
+                // Exit left or right
+                x -= base.dx - 2;
+                a.pz.y = base.p.y + x + 1;
+                a.pz.x = base.p.x;
+                double f = RandomUtils.uniform(RANDOM);
+                if (f < 0.2) {
+                    a.structure = "room";
+                    a.dx = RandomUtils.uniform(RANDOM, 3, 10);
+                    a.dy = RandomUtils.uniform(RANDOM, 3, 10);
+                    a.p.y = a.pz.y - RandomUtils.uniform(RANDOM, 1, a.dy - 1);
+                } else {
+                    a.structure = "horizontal";
+                    a.dx = RandomUtils.uniform(RANDOM, 3, 16);
+                }
+                if (RandomUtils.uniform(RANDOM, 2) > 0) {
+                    a.pz.x += base.dx - 1;
+                } else {
+                    a.dx *= -1;
+                }
+                a.p.x = a.pz.x;
+            }
+        } else if (base.structure.equals("horizontal")) {
+            switch (RandomUtils.uniform(RANDOM, 3)) {
+                case 0:
+                    a.structure = "vertical";
+                    a.pz.y += 1;
+                    a.pz.x = base.dx < 0 ? base.pz.x + base.dx + 2 : base.pz.x + base.dx - 2;
+                    a.p.y = a.pz.y;
+                    a.dy = RandomUtils.uniform(RANDOM, 3, 16);
+                    break;
+                case 1:
+                    a.structure = "vertical";
+                    a.pz.y -= 1;
+                    a.pz.x = base.dx < 0 ? base.pz.x + base.dx + 2 : base.pz.x + base.dx - 2;
+                    a.p.y = a.pz.y;
+                    a.dy = (RandomUtils.uniform(RANDOM, 3, 16) * -1);
+                case 2:
+                    a.structure = "horizontal";
+                    a.pz.x = base.dx < 0 ? base.pz.x + base.dx + 1 : base.pz.x + base.dx - 1;
+                    a.dx = RandomUtils.uniform(RANDOM, 3, 16);
+                    a.dx = base.dx < 0 ? a.dx * -1 : a.dx;
+            }
+        } else if (base.structure.equals("vertical")) {
+            switch (RandomUtils.uniform(RANDOM, 3)) {
+                case 0:
+                    a.structure = "horizontal";
+                    a.pz.x += 1;
+                    a.pz.y = base.dy < 0 ? base.pz.y + base.dy + 2 : base.pz.y + base.dy - 2;
+                    a.p.x = a.pz.x;
+                    a.dx = RandomUtils.uniform(RANDOM, 3, 16);
+                    break;
+                case 1:
+                    a.structure = "horizontal";
+                    a.pz.x -= 1;
+                    a.pz.y = base.dy < 0 ? base.pz.y + base.dy + 2 : base.pz.y + base.dy - 2;
+                    a.p.x = a.pz.x;
+                    a.dx = (RandomUtils.uniform(RANDOM, 3, 16) * -1);
+                case 2:
+                    a.structure = "vertical";
+                    a.pz.y = base.dy < 0 ? base.pz.y + base.dy + 1 : base.pz.y + base.dy - 1;
+                    a.dy = RandomUtils.uniform(RANDOM, 3, 16);
+                    a.dy = base.dy < 0 ? a.dy * -1 : a.dy;
+            }
+        }
+        return a;
     }
 
     /** Alternate method end */
