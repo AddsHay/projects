@@ -192,13 +192,12 @@ public class RandomWorld {
         int d = RandomUtils.uniform(RANDOM, 3, 10);
         if (p + d > w - 1) {
             return w - p - 2;
-        } else if (p + d < 0) {
-            return - p;
+        } else if (p - d < 0) {
+            return p;
         } else {
             return d;
         }
     }
-
 
     public static void drawworld(TETile[][] tiles, TETile walltile, TETile floortile) {
         fillWithNothing(tiles);
@@ -214,6 +213,80 @@ public class RandomWorld {
             randombuilder(tiles, walltile, floortile, p, dx, dy);
         }
     }
+
+    /** Alternative method I'm working on below */
+
+    public static void drawbuild(TETile[][] tiles, TETile walltile, TETile floortile) {
+        fillWithNothing(tiles);
+        Pos p = new Pos(RandomUtils.uniform(RANDOM, 10, WIDTH - 10), RandomUtils.uniform(RANDOM, 10, HEIGHT - 10));
+        int dx = createdimension(p.x, WIDTH);
+        int dy = createdimension(p.y, HEIGHT);
+        Steps end = new Steps(null, null, null, null, null,
+                null, 0, 0, 0, 0, "x");
+        Steps base = new Steps(end, end, tiles, walltile, floortile,
+                p, dx, dy, 0, 0, "room");
+        end.next = base;
+        end.last = base;
+        bloom(base);
+    }
+
+    public static void bloom(Steps base) {
+        // Build structure (r,h,v) with wall/floor on tiles at p dimensions dx/dy
+        //     Use checker to test viability, build only if possible
+        // Add exit location data to the end of a list
+        // Build new structure with next list item with bloom(next stuff)
+        //
+        // Make the given structure
+        switch (base.structure) {
+            case "room": break;
+            case "horizontal": break;
+            case "vertical": break;
+            default: base.zero = 1;
+        }
+        // Add new Steps
+        if (RandomUtils.uniform(RANDOM) > base.zero) {
+            for (int i = RandomUtils.uniform(RANDOM, 1, 4); i > 0; i--) {
+                Steps next = new Steps(base.last, base.last.last, base.tile, base.wall, base.floor,
+                        null, 0, 0, 0, 0, "x");
+                base.last.last.next = next;
+                base.last.last = next;
+            }
+        }
+        // Run next thing
+        if (!base.structure.equals("x")) {
+            bloom(base.next);
+        }
+    }
+
+    private static class Steps {
+        private Steps next = null;
+        private Steps last = null;
+        private TETile[][] tile;
+        private TETile wall;
+        private TETile floor;
+        private Pos p;
+        private int dx;
+        private int dy;
+        private int dz;
+        private double zero;
+        private String structure;
+        Steps(Steps nx, Steps ls, TETile[][] tls, TETile wltl, TETile fltl,
+              Pos ps, int drx, int dry, int drz, double zro, String str) {
+            next = nx;
+            last = ls;
+            tile = tls;
+            wall = wltl;
+            floor = fltl;
+            p = ps;
+            dx = drx;
+            dy = dry;
+            dz = drz;
+            zero = zro;
+            structure = str;
+        }
+    }
+
+    /** Alternate method end */
 
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
