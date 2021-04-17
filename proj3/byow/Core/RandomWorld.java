@@ -6,10 +6,12 @@ import byow.TileEngine.Tileset;
 import java.lang.Math;
 import java.util.Random;
 
+
 public class RandomWorld {
+    private static int stop = 250;
     private static final int WIDTH = 50;
     private static final int HEIGHT = 50;
-    private static final long SEED = 2873123;
+    public static long SEED = 2873124;
     private static final Random RANDOM = new Random(SEED);
 
     private static class Pos {
@@ -215,7 +217,6 @@ public class RandomWorld {
     }
 
     /** Alternative method I'm working on below */
-
     public static void drawbuild(TETile[][] tiles, TETile walltile, TETile floortile) {
         fillWithNothing(tiles);
         Pos p = new Pos(RandomUtils.uniform(RANDOM, 10, WIDTH - 10), RandomUtils.uniform(RANDOM, 10, HEIGHT - 10));
@@ -259,15 +260,19 @@ public class RandomWorld {
                     case "up":
                         createhallvert(base.tile, base.wall, base.floor, base.p, base.dy);
                         drawrow(base.tile, base.p.x - 1, base.p.y + base.dy, base.wall, 3);
+                        break;
                     case "down":
                         createhallvert(base.tile, base.wall, base.floor, base.p, -base.dy);
                         drawrow(base.tile, base.p.x - 1, base.p.y - base.dy, base.wall, 3);
+                        break;
                     case "left":
                         createhallhor(base.tile, base.wall, base.floor, base.p, -base.dx);
                         drawcolumn(base.tile, base.p.x - base.dx, base.p.y - 1, base.wall, 3);
+                        break;
                     case "right":
                         createhallhor(base.tile, base.wall, base.floor, base.p, base.dx);
                         drawcolumn(base.tile, base.p.x + base.dx, base.p.y - 1, base.wall, 3);
+                        break;
                     default:
                         break;
                 }
@@ -278,7 +283,7 @@ public class RandomWorld {
         }
         // Add new Steps
         if (RandomUtils.uniform(RANDOM) > base.zero) {
-            for (int i = RandomUtils.uniform(RANDOM, 1, 4); i > 0; i--) {
+            for (int i = RandomUtils.uniform(RANDOM, 0, 5); i > 0; i--) {
                 Steps next = stepmaker(base);
                 Steps now = new Steps(next.next, next.last, next.tile, next.wall, next.floor, next.p, next.pz,
                         next.dx, next.dy, next.zero, next.structure, next.direction);
@@ -291,15 +296,15 @@ public class RandomWorld {
         }
         // Run next thing
         /**
-        System.out.println(base.structure + base.direction);
-        if (base.pz != null) {
-            System.out.print(base.p.x);
-            System.out.println(base.p.y);
-            System.out.print(base.dx);
-            System.out.println(base.dy);
-            System.out.print(base.pz.x);
-            System.out.println(base.pz.y);
-        }
+         System.out.println(base.structure + base.direction);
+         if (base.pz != null) {
+         System.out.print(base.p.x);
+         System.out.println(base.p.y);
+         System.out.print(base.dx);
+         System.out.println(base.dy);
+         System.out.print(base.pz.x);
+         System.out.println(base.pz.y);
+         }
          */
         if (!base.structure.equals("x")) {
             bloom(base.next);
@@ -543,7 +548,7 @@ public class RandomWorld {
             a.direction = "o";
         }
         // Choose structure
-        if (RandomUtils.uniform(RANDOM, 2) < 1) {
+        if (RandomUtils.uniform(RANDOM, 5) < 1) {
             // room
             a.structure = "room";
             a.dx = RandomUtils.uniform(RANDOM, 3, 10);
@@ -594,22 +599,20 @@ public class RandomWorld {
         return a;
     }
 
-    /** Alternate method end */
-
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
         TETile[][] tiles = new TETile[WIDTH][HEIGHT];
         /**
-        fillWithNothing(tiles);
-        Pos p = new Pos(10, 10);
-        createroom(tiles, Tileset.WALL, Tileset.FLOOR, p, 15, 15);
-        p = new Pos(30, 20);
-        createhallvert(tiles, Tileset.WALL, Tileset.FLOOR, p, 9);
-        createhallhor(tiles, Tileset.WALL, Tileset.FLOOR, p, 9);
-        createhallvert(tiles, Tileset.WALL, Tileset.FLOOR, p, -9);
-        createhallhor(tiles, Tileset.WALL, Tileset.FLOOR, p, -9);
-        cap(tiles);
+         fillWithNothing(tiles);
+         Pos p = new Pos(10, 10);
+         createroom(tiles, Tileset.WALL, Tileset.FLOOR, p, 15, 15);
+         p = new Pos(30, 20);
+         createhallvert(tiles, Tileset.WALL, Tileset.FLOOR, p, 9);
+         createhallhor(tiles, Tileset.WALL, Tileset.FLOOR, p, 9);
+         createhallvert(tiles, Tileset.WALL, Tileset.FLOOR, p, -9);
+         createhallhor(tiles, Tileset.WALL, Tileset.FLOOR, p, -9);
+         cap(tiles);
          */
         drawbuild(tiles, Tileset.WALL, Tileset.FLOOR);
 
