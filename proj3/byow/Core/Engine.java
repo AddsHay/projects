@@ -9,7 +9,6 @@ public class Engine {
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
-
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
      * including inputs from the main menu.
@@ -39,12 +38,8 @@ public class Engine {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] interactWithInputString(String input) {
-        TERenderer ter = new TERenderer();
-        ter.initialize(WIDTH, HEIGHT);
-        TETile[][] tiles = new TETile[WIDTH][HEIGHT];
-        RandomWorld.drawbuild(tiles, Tileset.WALL, Tileset.FLOOR);
-        ter.renderFrame(tiles);
-        TETile[][] finalWorldFrame = null;
+        TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
+        RandomWorld.drawbuild(finalWorldFrame, Tileset.WALL, Tileset.FLOOR);
         return finalWorldFrame;
     }
 }
