@@ -8,9 +8,8 @@ import java.util.Random;
 
 
 public class RandomWorld {
-    private static int stop = 250;
-    private static final int WIDTH = 50;
-    private static final int HEIGHT = 50;
+    private static final int WIDTH = 80;
+    private static final int HEIGHT = 30;
     public static long SEED = 2873124;
     private static final Random RANDOM = new Random(SEED);
 
