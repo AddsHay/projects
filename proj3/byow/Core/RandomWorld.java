@@ -9,7 +9,7 @@ import java.util.Random;
 public class RandomWorld {
     private static final int WIDTH = 50;
     private static final int HEIGHT = 50;
-    private static final long SEED = 2873124;
+    private static final long SEED = 2873123;
     private static final Random RANDOM = new Random(SEED);
 
     private static class Pos {
@@ -228,10 +228,12 @@ public class RandomWorld {
                 p, pz, dx, dy, 0, "room", "x");
         end.next = base;
         end.last = base;
-        for (int i = 2; i > 0; i--) {
+        for (int i = RandomUtils.uniform(RANDOM, 1, 4); i > 0; i--) {
             Steps next = stepmaker(base);
             base.last.last.next = next;
             base.last.last = next;
+            base.last.last.last = base.last.last.last.last;
+            base.last.last.next = base.last;
             base.next.last = base.last;
         }
         bloom(base);
@@ -257,35 +259,38 @@ public class RandomWorld {
                     case "up":
                         createhallvert(base.tile, base.wall, base.floor, base.p, base.dy);
                         drawrow(base.tile, base.p.x - 1, base.p.y + base.dy, base.wall, 3);
-                        break;
                     case "down":
                         createhallvert(base.tile, base.wall, base.floor, base.p, -base.dy);
                         drawrow(base.tile, base.p.x - 1, base.p.y - base.dy, base.wall, 3);
-                        break;
                     case "left":
                         createhallhor(base.tile, base.wall, base.floor, base.p, -base.dx);
                         drawcolumn(base.tile, base.p.x - base.dx, base.p.y - 1, base.wall, 3);
-                        break;
                     case "right":
                         createhallhor(base.tile, base.wall, base.floor, base.p, base.dx);
                         drawcolumn(base.tile, base.p.x + base.dx, base.p.y - 1, base.wall, 3);
-                        break;
                     default:
                         break;
                 }
+                break;
             default:
                 base.zero = 1;
+                break;
         }
         // Add new Steps
         if (RandomUtils.uniform(RANDOM) > base.zero) {
-            for (int i = RandomUtils.uniform(RANDOM, 0, 4); i > 0; i--) {
-                Steps now = stepmaker(base);
+            for (int i = RandomUtils.uniform(RANDOM, 1, 4); i > 0; i--) {
+                Steps next = stepmaker(base);
+                Steps now = new Steps(next.next, next.last, next.tile, next.wall, next.floor, next.p, next.pz,
+                        next.dx, next.dy, next.zero, next.structure, next.direction);
                 base.last.last.next = now;
                 base.last.last = now;
+                base.last.last.last = base.last.last.last.last;
+                base.last.last.next = base.last;
                 base.next.last = base.last;
             }
         }
         // Run next thing
+        /**
         System.out.println(base.structure + base.direction);
         if (base.pz != null) {
             System.out.print(base.p.x);
@@ -295,6 +300,7 @@ public class RandomWorld {
             System.out.print(base.pz.x);
             System.out.println(base.pz.y);
         }
+         */
         if (!base.structure.equals("x")) {
             bloom(base.next);
         }
@@ -326,6 +332,10 @@ public class RandomWorld {
         }
         if (step.p.y + step.dy > HEIGHT - 3) {
             step.dy = HEIGHT - 3 - step.p.y;
+        }
+        if (step.dx < 3 || step.dy < 3) {
+            step.structure = "o";
+            step.direction = "o";
         }
     }
 
@@ -486,6 +496,15 @@ public class RandomWorld {
                 a.direction = "o";
             }
         } else if (base.structure.equals("hall")) {
+            if (base.direction.equals("left")) {
+                a.pz = new Pos(base.p.x - base.dx + 1, base.p.y);
+            } else if (base.direction.equals("right")) {
+                a.pz = new Pos(base.p.x + base.dx - 1, base.p.y);
+            } else if (base.direction.equals("up")) {
+                a.pz = new Pos(base.p.x, base.p.y + base.dy - 1);
+            } else if (base.direction.equals("down")) {
+                a.pz = new Pos(base.p.x, base.p.y - base.dy + 1);
+            }
             switch (RandomUtils.uniform(RANDOM, 3)) {
                 case 0:
                     // left (+down)
@@ -524,7 +543,7 @@ public class RandomWorld {
             a.direction = "o";
         }
         // Choose structure
-        if (RandomUtils.uniform(RANDOM, 3) < 1) {
+        if (RandomUtils.uniform(RANDOM, 2) < 1) {
             // room
             a.structure = "room";
             a.dx = RandomUtils.uniform(RANDOM, 3, 10);
@@ -557,12 +576,16 @@ public class RandomWorld {
             switch (a.direction) {
                 case "left":
                     a.pz.x -= a.dx - 1;
+                    break;
                 case "right":
                     a.pz.x += a.dx - 1;
+                    break;
                 case "up":
                     a.pz.y += a.dx - 1;
+                    break;
                 case "down":
                     a.pz.y -= a.dy - 1;
+                    break;
                 default:
                     a.structure = "o";
                     a.direction = "o";
