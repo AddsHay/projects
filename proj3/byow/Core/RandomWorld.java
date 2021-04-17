@@ -219,15 +219,21 @@ public class RandomWorld {
     public static void drawbuild(TETile[][] tiles, TETile walltile, TETile floortile) {
         fillWithNothing(tiles);
         Pos p = new Pos(RandomUtils.uniform(RANDOM, 10, WIDTH - 10), RandomUtils.uniform(RANDOM, 10, HEIGHT - 10));
-        Pos pz = new Pos(-1, -1);
+        Pos pz = new Pos(p.x + 1, p.y + 1);
         int dx = createdimension(p.x, WIDTH);
         int dy = createdimension(p.y, HEIGHT);
         Steps end = new Steps(null, null, null, null, null,
-                null, null, 0, 0, 0, "x");
+                null, null, 0, 0, 0, "x", "x");
         Steps base = new Steps(end, end, tiles, walltile, floortile,
-                p, pz, dx, dy, 0, "room");
+                p, pz, dx, dy, 0, "room", "x");
         end.next = base;
         end.last = base;
+        for (int i = 2; i > 0; i--) {
+            Steps next = stepmaker(base);
+            base.last.last.next = next;
+            base.last.last = next;
+            base.next.last = base.last;
+        }
         bloom(base);
     }
 
@@ -237,50 +243,211 @@ public class RandomWorld {
         // Add exit location data to the end of a list
         // Build new structure with next list item with bloom(next stuff)
         //
+        // Fix the given structure
+        fix(base);
         // Make the given structure
-        // (Note that this shifts P to the bottom-left corner)
+        // (Note that this makes P the bottom-left corner)
         switch (base.structure) {
             case "room":
-                // replace these later?
                 createroom(base.tile, base.wall, base.floor, base.p, base.dx, base.dy);
+                base.tile[base.pz.x][base.pz.y] = Tileset.FLOWER;
                 break;
-            case "horizontal":
-                createhallhor(base.tile, base.wall, base.floor, base.p, base.dx);
-                break;
-            case "vertical":
-                createhallvert(base.tile, base.wall, base.floor, base.p, base.dy);
-                break;
+            case "hall":
+                switch (base.direction) {
+                    case "up":
+                        createhallvert(base.tile, base.wall, base.floor, base.p, base.dy);
+                        drawrow(base.tile, base.p.x - 1, base.p.y + base.dy, base.wall, 3);
+                        break;
+                    case "down":
+                        createhallvert(base.tile, base.wall, base.floor, base.p, -base.dy);
+                        drawrow(base.tile, base.p.x - 1, base.p.y - base.dy, base.wall, 3);
+                        break;
+                    case "left":
+                        createhallhor(base.tile, base.wall, base.floor, base.p, -base.dx);
+                        drawcolumn(base.tile, base.p.x - base.dx, base.p.y - 1, base.wall, 3);
+                        break;
+                    case "right":
+                        createhallhor(base.tile, base.wall, base.floor, base.p, base.dx);
+                        drawcolumn(base.tile, base.p.x + base.dx, base.p.y - 1, base.wall, 3);
+                        break;
+                    default:
+                        break;
+                }
             default:
                 base.zero = 1;
         }
         // Add new Steps
         if (RandomUtils.uniform(RANDOM) > base.zero) {
-            for (int i = RandomUtils.uniform(RANDOM, 1, 4); i > 0; i--) {
-                Steps next = stepmaker(base);
-                base.last.last.next = next;
-                base.last.last = next;
+            for (int i = RandomUtils.uniform(RANDOM, 0, 4); i > 0; i--) {
+                Steps now = stepmaker(base);
+                base.last.last.next = now;
+                base.last.last = now;
+                base.next.last = base.last;
             }
         }
         // Run next thing
+        System.out.println(base.structure + base.direction);
+        if (base.pz != null) {
+            System.out.print(base.p.x);
+            System.out.println(base.p.y);
+            System.out.print(base.dx);
+            System.out.println(base.dy);
+            System.out.print(base.pz.x);
+            System.out.println(base.pz.y);
+        }
         if (!base.structure.equals("x")) {
             bloom(base.next);
         }
     }
 
+    private static void fix(Steps step) {
+        if (step.structure.equals("room")) {
+            fixroom(step);
+        } else if (step.structure.equals("hall")) {
+            fixhall(step);
+        }
+    }
+
+    private static void fixroom(Steps step) {
+        fixroomborder(step);
+    }
+
+    private static void fixroomborder(Steps step) {
+        if (step.p.x < 3) {
+            step.p.x = 3;
+            step.dx -= 3;
+        }
+        if (step.p.y < 3) {
+            step.p.y = 3;
+            step.dy -= 3;
+        }
+        if (step.p.x + step.dx > WIDTH - 3) {
+            step.dx = WIDTH - 3 - step.p.x;
+        }
+        if (step.p.y + step.dy > HEIGHT - 3) {
+            step.dy = HEIGHT - 3 - step.p.y;
+        }
+    }
+
+    private static void fixhall(Steps step) {
+        if (step.direction.equals("up")) {
+            if (step.p.y + step.dy > HEIGHT - 3) {
+                step.dy = Math.max(HEIGHT - 3 - step.p.y, 0);
+                if (step.dy == 0) {
+                    step.structure = "o";
+                    step.direction = "o";
+                }
+            }
+            for (int i = 1; i < step.dy; i += 1) {
+                if (step.tile[step.p.x][step.p.y + i] == step.wall) {
+                    if (step.tile[step.p.x][step.p.y + i + 1] == step.floor) {
+                        step.dy = i + 1;
+                        break;
+                    }
+                }
+                if (step.tile[step.p.x][step.p.y + i] == step.floor ||
+                        step.tile[step.p.x - 1][step.p.y + i] == step.floor ||
+                        step.tile[step.p.x + 1][step.p.y + i] == step.floor) {
+                    step.structure = "o";
+                    step.direction = "o";
+                    break;
+                }
+            }
+        }
+        if (step.direction.equals("down")) {
+            if (step.p.y - step.dy < 3) {
+                step.dy = Math.max(step.p.y - 3, 0);
+                if (step.dy == 0) {
+                    step.structure = "o";
+                    step.direction = "o";
+                }
+            }
+            for (int i = 1; i < step.dy; i += 1) {
+                if (step.tile[step.p.x][step.p.y - i] == step.wall) {
+                    if (step.tile[step.p.x][step.p.y - i - 1] == step.floor) {
+                        step.dy = i + 1;
+                        break;
+                    }
+                }
+                if (step.tile[step.p.x][step.p.y - i] == step.floor  ||
+                        step.tile[step.p.x - 1][step.p.y - i] == step.floor ||
+                        step.tile[step.p.x + 1][step.p.y - i] == step.floor) {
+                    step.structure = "o";
+                    step.direction = "o";
+                    break;
+                }
+            }
+        }
+        if (step.direction.equals("right")) {
+            if (step.p.x + step.dx > WIDTH - 3) {
+                step.dx = Math.max(WIDTH - 3 - step.p.x, 0);
+                if (step.dx == 0) {
+                    step.structure = "o";
+                    step.direction = "o";
+                }
+            }
+            for (int i = 1; i < step.dx; i += 1) {
+                if (step.tile[step.p.x + i][step.p.y] == step.wall) {
+                    if (step.tile[step.p.x + i + 1][step.p.y] == step.floor) {
+                        step.dx = i + 1;
+                        break;
+                    }
+                }
+                if (step.tile[step.p.x + i][step.p.y] == step.floor  ||
+                        step.tile[step.p.x + i][step.p.y - 1] == step.floor ||
+                        step.tile[step.p.x + i][step.p.y + 1] == step.floor) {
+                    step.structure = "o";
+                    step.direction = "o";
+                    break;
+                }
+            }
+        }
+        if (step.direction.equals("left")) {
+            if (step.p.x - step.dx < 3) {
+                step.dx = Math.max(step.p.x - 3, 0);
+                if (step.dx == 0) {
+                    step.structure = "o";
+                    step.direction = "o";
+                }
+            }
+            for (int i = 1; i < step.dx; i += 1) {
+                if (step.tile[step.p.x - i][step.p.y] == step.wall) {
+                    if (step.tile[step.p.x - i - 1][step.p.y] == step.floor) {
+                        step.dx = i + 1;
+                        break;
+                    }
+                }
+                if (step.tile[step.p.x - i][step.p.y] == step.floor   ||
+                        step.tile[step.p.x - i][step.p.y - 1] == step.floor ||
+                        step.tile[step.p.x - i][step.p.y + 1] == step.floor) {
+                    step.structure = "o";
+                    step.direction = "o";
+                    break;
+                }
+            }
+        }
+    }
+
+    /** Storage unit for the upcoming steps */
     private static class Steps {
         private Steps next = null;
         private Steps last = null;
         private TETile[][] tile;
         private TETile wall;
         private TETile floor;
+        // p = Constructing position
+        // pz = Entrance position
         private Pos p;
         private Pos pz;
         private int dx;
         private int dy;
         private double zero;
+        // structure: room, hall
+        // direction: up, down, left, right, o (do nothing), x (end)
         private String structure;
+        private String direction;
         Steps(Steps nx, Steps ls, TETile[][] tls, TETile wltl, TETile fltl,
-              Pos ps, Pos psz, int drx, int dry, double zro, String str) {
+              Pos ps, Pos psz, int drx, int dry, double zro, String str, String dir) {
             next = nx;
             last = ls;
             tile = tls;
@@ -292,97 +459,113 @@ public class RandomWorld {
             dy = dry;
             zero = zro;
             structure = str;
+            direction = dir;
         }
     }
 
     private static Steps stepmaker(Steps base) {
         Steps a = new Steps(base.last, base.last.last, base.tile, base.wall, base.floor,
-                base.p, base.pz, 0, 0, 0, "x");
+                null, null, 0, 0, 0, "x", "x");
         if (base.structure.equals("room")) {
-            int x = RandomUtils.uniform(RANDOM, Math.abs(base.dx) + Math.abs(base.dy) - 4);
-            if (x < base.dx - 2) {
-                // Exit top or bottom
-                a.pz.x = base.p.x + x + 1;
-                a.pz.y = base.p.y;
-                double f = RandomUtils.uniform(RANDOM);
-                if (f < 0.2) {
-                    a.structure = "room";
-                    a.dx = RandomUtils.uniform(RANDOM, 3, 10);
-                    a.dy = RandomUtils.uniform(RANDOM, 3, 10);
-                    a.p.x = a.pz.x - RandomUtils.uniform(RANDOM, 1, a.dx - 1);
-                } else {
-                    a.structure = "vertical";
-                    a.dy = RandomUtils.uniform(RANDOM, 3, 16);
-                }
-                if (RandomUtils.uniform(RANDOM, 2) > 0) {
-                    a.pz.y += base.dy - 1;
-                } else {
-                    a.dy *= -1;
-                }
-                a.p.y = a.pz.y;
+            int y = RandomUtils.uniform(RANDOM, 2);
+            int r = RandomUtils.uniform(RANDOM, -base.dx + 2, base.dy - 2);
+            if (r < 0) {
+                a.pz = new Pos(r * -1 + base.p.x, base.p.y + ((base.dy - 1) * y));
             } else {
-                // Exit left or right
-                x -= base.dx - 2;
-                a.pz.y = base.p.y + x + 1;
-                a.pz.x = base.p.x;
-                double f = RandomUtils.uniform(RANDOM);
-                if (f < 0.2) {
-                    a.structure = "room";
-                    a.dx = RandomUtils.uniform(RANDOM, 3, 10);
-                    a.dy = RandomUtils.uniform(RANDOM, 3, 10);
-                    a.p.y = a.pz.y - RandomUtils.uniform(RANDOM, 1, a.dy - 1);
-                } else {
-                    a.structure = "horizontal";
-                    a.dx = RandomUtils.uniform(RANDOM, 3, 16);
-                }
-                if (RandomUtils.uniform(RANDOM, 2) > 0) {
-                    a.pz.x += base.dx - 1;
-                } else {
-                    a.dx *= -1;
-                }
-                a.p.x = a.pz.x;
+                a.pz = new Pos( base.p.x + ((base.dx - 1) * y), r + 1 + base.p.y);
             }
-        } else if (base.structure.equals("horizontal")) {
+            if (r < 0 && y == 0) {
+                a.direction = "down";
+            } else if (r >= 0 && y == 0) {
+                a.direction = "left";
+            } else if (r < 0 && y == 1) {
+                a.direction = "up";
+            } else if (r >= 0 && y == 1) {
+                a.direction = "right";
+            } else {
+                a.direction = "o";
+            }
+        } else if (base.structure.equals("hall")) {
             switch (RandomUtils.uniform(RANDOM, 3)) {
                 case 0:
-                    a.structure = "vertical";
-                    a.pz.y += 1;
-                    a.pz.x = base.dx < 0 ? base.pz.x + base.dx + 2 : base.pz.x + base.dx - 2;
-                    a.p.y = a.pz.y;
-                    a.dy = RandomUtils.uniform(RANDOM, 3, 16);
+                    // left (+down)
+                    if (base.direction.equals("right")) {
+                        a.direction = "down";
+                        a.pz.y -= 1;
+                    } else {
+                        a.direction = "left";
+                        a.pz.x -= 1;
+                    }
                     break;
                 case 1:
-                    a.structure = "vertical";
-                    a.pz.y -= 1;
-                    a.pz.x = base.dx < 0 ? base.pz.x + base.dx + 2 : base.pz.x + base.dx - 2;
-                    a.p.y = a.pz.y;
-                    a.dy = (RandomUtils.uniform(RANDOM, 3, 16) * -1);
+                    // up (+down)
+                    if (base.direction.equals("down")) {
+                        a.direction = "down";
+                        a.pz.y -= 1;
+                    } else {
+                        a.direction = "up";
+                        a.pz.y += 1;
+                    }
+                    break;
                 case 2:
-                    a.structure = "horizontal";
-                    a.pz.x = base.dx < 0 ? base.pz.x + base.dx + 1 : base.pz.x + base.dx - 1;
-                    a.dx = RandomUtils.uniform(RANDOM, 3, 16);
-                    a.dx = base.dx < 0 ? a.dx * -1 : a.dx;
+                    // right (+down)
+                    if (base.direction.equals("left")) {
+                        a.direction = "down";
+                        a.pz.y -= 1;
+                    } else {
+                        a.direction = "right";
+                        a.pz.x += 1;
+                    }
+                    break;
+                default: a.direction = "o";
             }
-        } else if (base.structure.equals("vertical")) {
-            switch (RandomUtils.uniform(RANDOM, 3)) {
-                case 0:
-                    a.structure = "horizontal";
-                    a.pz.x += 1;
-                    a.pz.y = base.dy < 0 ? base.pz.y + base.dy + 2 : base.pz.y + base.dy - 2;
-                    a.p.x = a.pz.x;
-                    a.dx = RandomUtils.uniform(RANDOM, 3, 16);
+        } else {
+            a.structure = "o";
+            a.direction = "o";
+        }
+        // Choose structure
+        if (RandomUtils.uniform(RANDOM, 3) < 1) {
+            // room
+            a.structure = "room";
+            a.dx = RandomUtils.uniform(RANDOM, 3, 10);
+            a.dy = RandomUtils.uniform(RANDOM, 3, 10);
+            a.p = new Pos(a.pz.x, a.pz.y);
+            switch (a.direction) {
+                case "left":
+                    a.p.x -= a.dx - 1;
+                    a.p.y -= RandomUtils.uniform(RANDOM, 1, a.dy - 1);
                     break;
-                case 1:
-                    a.structure = "horizontal";
-                    a.pz.x -= 1;
-                    a.pz.y = base.dy < 0 ? base.pz.y + base.dy + 2 : base.pz.y + base.dy - 2;
-                    a.p.x = a.pz.x;
-                    a.dx = (RandomUtils.uniform(RANDOM, 3, 16) * -1);
-                case 2:
-                    a.structure = "vertical";
-                    a.pz.y = base.dy < 0 ? base.pz.y + base.dy + 1 : base.pz.y + base.dy - 1;
-                    a.dy = RandomUtils.uniform(RANDOM, 3, 16);
-                    a.dy = base.dy < 0 ? a.dy * -1 : a.dy;
+                case "right":
+                    a.p.y -= RandomUtils.uniform(RANDOM, 1, a.dy - 1);
+                    break;
+                case "up":
+                    a.p.x -= RandomUtils.uniform(RANDOM, 1, a.dx - 1);
+                    break;
+                case "down":
+                    a.p.x -= RandomUtils.uniform(RANDOM, 1, a.dx - 1);
+                    a.p.y -= a.dy - 1;
+                    break;
+                default:
+                    a.structure = "o";
+            }
+        } else {
+            // hall
+            a.structure = "hall";
+            a.p = new Pos(a.pz.x, a.pz.y);
+            a.dx = RandomUtils.uniform(RANDOM, 3, 10);
+            a.dy = RandomUtils.uniform(RANDOM, 3, 10);
+            switch (a.direction) {
+                case "left":
+                    a.pz.x -= a.dx - 1;
+                case "right":
+                    a.pz.x += a.dx - 1;
+                case "up":
+                    a.pz.y += a.dx - 1;
+                case "down":
+                    a.pz.y -= a.dy - 1;
+                default:
+                    a.structure = "o";
+                    a.direction = "o";
             }
         }
         return a;
@@ -405,7 +588,7 @@ public class RandomWorld {
         createhallhor(tiles, Tileset.WALL, Tileset.FLOOR, p, -9);
         cap(tiles);
          */
-        drawworld(tiles, Tileset.WALL, Tileset.FLOOR);
+        drawbuild(tiles, Tileset.WALL, Tileset.FLOOR);
 
         ter.renderFrame(tiles);
     }
