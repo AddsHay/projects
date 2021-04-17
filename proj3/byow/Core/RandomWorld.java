@@ -10,8 +10,8 @@ import java.util.Random;
 public class RandomWorld {
     private static final int WIDTH = 80;
     private static final int HEIGHT = 30;
-    public static long SEED = 2873124;
-    private static final Random RANDOM = new Random(SEED);
+    public static String SEED = "2873124";
+    private static final Random RANDOM = new Random(Long.parseLong(SEED));
 
     private static class Pos {
         int x;
@@ -216,7 +216,7 @@ public class RandomWorld {
     }
 
     /** Alternative method I'm working on below */
-    public static void drawbuild(TETile[][] tiles, TETile walltile, TETile floortile) {
+    public static void drawbuild(TETile[][] tiles, TETile walltile, TETile floortile, String SEED) {
         fillWithNothing(tiles);
         Pos p = new Pos(RandomUtils.uniform(RANDOM, 10, WIDTH - 10), RandomUtils.uniform(RANDOM, 10, HEIGHT - 10));
         Pos pz = new Pos(p.x + 1, p.y + 1);
@@ -602,7 +602,7 @@ public class RandomWorld {
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
         TETile[][] tiles = new TETile[WIDTH][HEIGHT];
-        drawbuild(tiles, Tileset.WALL, Tileset.FLOOR);
+        drawbuild(tiles, Tileset.WALL, Tileset.FLOOR, SEED);
 
         ter.renderFrame(tiles);
     }
