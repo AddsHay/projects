@@ -8,12 +8,13 @@ import java.util.Random;
 
 
 public class RandomWorld {
-    private static final int WIDTH = 80;
-    private static final int HEIGHT = 30;
-    public static String SEED = "2873124";
-    private static final Random RANDOM = new Random(Long.parseLong(SEED));
+    public  final int WIDTH = 80;
+    public  final int HEIGHT = 30;
+    public String SEED = "2873124";
+    public Random RANDOM = new Random(Long.parseLong(SEED));
 
-    private static class Pos {
+
+    public class Pos {
         int x;
         int y;
 
@@ -27,7 +28,7 @@ public class RandomWorld {
         }
     }
 
-    public static void createroom(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx, int dy) {
+    public   void createroom(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx, int dy) {
         drawrow(tiles, p.x, p.y, walltile, dx);
         drawrow(tiles, p.x, p.y + dy - 1, walltile, dx);
         drawcolumn(tiles, p.x, p.y, walltile, dy);
@@ -35,19 +36,19 @@ public class RandomWorld {
         fillroom(tiles, p.x + 1, p.y + 1, floortile, dx - 2, dy - 2);
     }
 
-    public static void createhallvert(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dy) {
+    public   void createhallvert(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dy) {
         drawcolumn(tiles, p.x - 1, p.y, walltile, dy);
         drawcolumn(tiles, p.x, p.y, floortile, dy);
         drawcolumn(tiles, p.x + 1, p.y, walltile, dy);
     }
 
-    public static void createhallhor(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx) {
+    public   void createhallhor(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx) {
         drawrow(tiles, p.x, p.y - 1, walltile, dx);
         drawrow(tiles, p.x, p.y, floortile, dx);
         drawrow(tiles, p.x, p.y + 1, walltile, dx);
     }
 
-    private static void drawrow(TETile[][] tiles, int x, int y, TETile tile, int dx) {
+    public  void drawrow(TETile[][] tiles, int x, int y, TETile tile, int dx) {
         if (dx > 0) {
             if (tiles[x][y] != Tileset.FLOOR) {
                 tiles[x][y] = tile;
@@ -62,7 +63,7 @@ public class RandomWorld {
         }
     }
 
-    private static void drawcolumn(TETile[][] tiles, int x, int y, TETile tile, int dy) {
+    public  void drawcolumn(TETile[][] tiles, int x, int y, TETile tile, int dy) {
         if (dy > 0) {
             if (tiles[x][y] != Tileset.FLOOR) {
                 tiles[x][y] = tile;
@@ -77,14 +78,15 @@ public class RandomWorld {
         }
     }
 
-    private static void fillroom(TETile[][] tiles, int x, int y, TETile floortile, int dx, int dy) {
+    public  void fillroom(TETile[][] tiles, int x, int y, TETile floortile, int dx, int dy) {
         if (dy > 0) {
             drawrow(tiles, x, y, floortile, dx);
             fillroom(tiles, x, y + 1, floortile, dx, dy - 1);
         }
     }
 
-    public static void cap(TETile[][] tiles) {
+    /**
+    public   void cap(TETile[][] tiles) {
         int height = tiles[0].length;
         int width = tiles.length;
         for (int x = 0; x < width; x += 1) {
@@ -101,7 +103,7 @@ public class RandomWorld {
         }
     }
 
-    public static void randomexit(TETile[][] tiles, Pos p, int dx, int dy) {
+    public   void randomexit(TETile[][] tiles, Pos p, int dx, int dy) {
         int check = RandomUtils.uniform(RANDOM, -Math.abs(dx) - Math.abs(dy) + 4, Math.abs(dx) + Math.abs(dy) - 4);
         if (check < -dx + 2) {
             if (p.x - 3 > 0) {
@@ -137,7 +139,7 @@ public class RandomWorld {
         }
     }
 
-    public static void randombuilder(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx, int dy) {
+    public   void randombuilder(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx, int dy) {
         int type = 0;
         if (tiles[p.x - 1][p.y] == Tileset.WALL && tiles[p.x + 1][p.y] == Tileset.WALL) {
             if (tiles[p.x][p.y - 1] == Tileset.FLOOR) {
@@ -177,8 +179,9 @@ public class RandomWorld {
             }
         }
     }
+    */
 
-    public static void fillWithNothing(TETile[][] tiles) {
+    public   void fillWithNothing(TETile[][] tiles) {
         int height = tiles[0].length;
         int width = tiles.length;
         for (int x = 0; x < width; x += 1) {
@@ -189,8 +192,8 @@ public class RandomWorld {
     }
 
     /** Return the maximum dimension without going over */
-    public static int createdimension(int p, int w) {
-        int d = RandomUtils.uniform(RANDOM, 3, 10);
+    public   int createdimension(int p, int w) {
+        int d =  RandomUtils.uniform(RANDOM, 3, 10);
         if (p + d > w - 1) {
             return w - p - 2;
         } else if (p - d < 0) {
@@ -199,8 +202,8 @@ public class RandomWorld {
             return d;
         }
     }
-
-    public static void drawworld(TETile[][] tiles, TETile walltile, TETile floortile) {
+   /**
+    public   void drawworld(TETile[][] tiles, TETile walltile, TETile floortile) {
         fillWithNothing(tiles);
         int opcount = RandomUtils.uniform(RANDOM, 10, 50);
         Pos p = new Pos(RandomUtils.uniform(RANDOM, 10, WIDTH - 10), RandomUtils.uniform(RANDOM, 10, HEIGHT - 10));
@@ -214,10 +217,12 @@ public class RandomWorld {
             randombuilder(tiles, walltile, floortile, p, dx, dy);
         }
     }
+    */
 
     /** Alternative method I'm working on below */
-    public static void drawbuild(TETile[][] tiles, TETile walltile, TETile floortile, String inputseed) {
-        SEED = inputseed;
+    public void drawbuild(TETile[][] tiles, TETile walltile, TETile floortile, String inputseed) {
+        Random root = new Random(Long.parseLong(inputseed));
+        RANDOM = root;
         fillWithNothing(tiles);
         Pos p = new Pos(RandomUtils.uniform(RANDOM, 10, WIDTH - 10), RandomUtils.uniform(RANDOM, 10, HEIGHT - 10));
         Pos pz = new Pos(p.x + 1, p.y + 1);
@@ -240,7 +245,7 @@ public class RandomWorld {
         bloom(base);
     }
 
-    public static void bloom(Steps base) {
+    public   void bloom(Steps base) {
         // Build structure (r,h,v) with wall/floor on tiles at p dimensions dx/dy
         //     Use checker to test viability, build only if possible
         // Add exit location data to the end of a list
@@ -311,7 +316,7 @@ public class RandomWorld {
         }
     }
 
-    private static void fix(Steps step) {
+    public  void fix(Steps step) {
         if (step.structure.equals("room")) {
             fixroom(step);
         } else if (step.structure.equals("hall")) {
@@ -319,11 +324,11 @@ public class RandomWorld {
         }
     }
 
-    private static void fixroom(Steps step) {
+    public  void fixroom(Steps step) {
         fixroomborder(step);
     }
 
-    private static void fixroomborder(Steps step) {
+    public  void fixroomborder(Steps step) {
         if (step.p.x < 3) {
             step.p.x = 3;
             step.dx -= 3;
@@ -344,7 +349,7 @@ public class RandomWorld {
         }
     }
 
-    private static void fixhall(Steps step) {
+    public  void fixhall(Steps step) {
         if (step.direction.equals("up")) {
             if (step.p.y + step.dy > HEIGHT - 3) {
                 step.dy = Math.max(HEIGHT - 3 - step.p.y, 0);
@@ -444,23 +449,23 @@ public class RandomWorld {
     }
 
     /** Storage unit for the upcoming steps */
-    private static class Steps {
-        private Steps next = null;
-        private Steps last = null;
-        private TETile[][] tile;
-        private TETile wall;
-        private TETile floor;
+    public class Steps {
+        public Steps next = null;
+        public Steps last = null;
+        public TETile[][] tile;
+        public TETile wall;
+        public TETile floor;
         // p = Constructing position
         // pz = Entrance position
-        private Pos p;
-        private Pos pz;
-        private int dx;
-        private int dy;
-        private double zero;
+        public Pos p;
+        public Pos pz;
+        public int dx;
+        public int dy;
+        public double zero;
         // structure: room, hall
         // direction: up, down, left, right, o (do nothing), x (end)
-        private String structure;
-        private String direction;
+        public String structure;
+        public String direction;
         Steps(Steps nx, Steps ls, TETile[][] tls, TETile wltl, TETile fltl,
               Pos ps, Pos psz, int drx, int dry, double zro, String str, String dir) {
             next = nx;
@@ -478,7 +483,7 @@ public class RandomWorld {
         }
     }
 
-    private static Steps stepmaker(Steps base) {
+    public  Steps stepmaker(Steps base) {
         Steps a = new Steps(base.last, base.last.last, base.tile, base.wall, base.floor,
                 null, null, 0, 0, 0, "x", "x");
         if (base.structure.equals("room")) {
@@ -599,7 +604,7 @@ public class RandomWorld {
         return a;
     }
 
-    public static void main(String[] args) {
+    public   void main(String[] args) {
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
         TETile[][] tiles = new TETile[WIDTH][HEIGHT];
