@@ -38,9 +38,9 @@ public class Engine {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] interactWithInputString(String input) {
-        String SEED = input;
+        String inputseed = input;
         TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
-        RandomWorld.drawbuild(finalWorldFrame, Tileset.WALL, Tileset.FLOOR, SEED);
+        RandomWorld.drawbuild(finalWorldFrame, Tileset.WALL, Tileset.FLOOR, inputseed);
         return finalWorldFrame;
     }
 }

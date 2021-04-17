@@ -216,7 +216,8 @@ public class RandomWorld {
     }
 
     /** Alternative method I'm working on below */
-    public static void drawbuild(TETile[][] tiles, TETile walltile, TETile floortile, String SEED) {
+    public static void drawbuild(TETile[][] tiles, TETile walltile, TETile floortile, String inputseed) {
+        SEED = inputseed;
         fillWithNothing(tiles);
         Pos p = new Pos(RandomUtils.uniform(RANDOM, 10, WIDTH - 10), RandomUtils.uniform(RANDOM, 10, HEIGHT - 10));
         Pos pz = new Pos(p.x + 1, p.y + 1);
