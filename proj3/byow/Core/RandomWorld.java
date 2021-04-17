@@ -11,7 +11,7 @@ public class RandomWorld {
     private static int stop = 250;
     private static final int WIDTH = 50;
     private static final int HEIGHT = 50;
-    private static final long SEED = 2873124;
+    public static long SEED = 2873124;
     private static final Random RANDOM = new Random(SEED);
 
     private static class Pos {
@@ -603,17 +603,6 @@ public class RandomWorld {
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
         TETile[][] tiles = new TETile[WIDTH][HEIGHT];
-        /**
-         fillWithNothing(tiles);
-         Pos p = new Pos(10, 10);
-         createroom(tiles, Tileset.WALL, Tileset.FLOOR, p, 15, 15);
-         p = new Pos(30, 20);
-         createhallvert(tiles, Tileset.WALL, Tileset.FLOOR, p, 9);
-         createhallhor(tiles, Tileset.WALL, Tileset.FLOOR, p, 9);
-         createhallvert(tiles, Tileset.WALL, Tileset.FLOOR, p, -9);
-         createhallhor(tiles, Tileset.WALL, Tileset.FLOOR, p, -9);
-         cap(tiles);
-         */
         drawbuild(tiles, Tileset.WALL, Tileset.FLOOR);
 
         ter.renderFrame(tiles);
