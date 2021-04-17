@@ -217,7 +217,6 @@ public class RandomWorld {
     }
 
     /** Alternative method I'm working on below */
-
     public static void drawbuild(TETile[][] tiles, TETile walltile, TETile floortile) {
         fillWithNothing(tiles);
         Pos p = new Pos(RandomUtils.uniform(RANDOM, 10, WIDTH - 10), RandomUtils.uniform(RANDOM, 10, HEIGHT - 10));
@@ -599,8 +598,6 @@ public class RandomWorld {
         }
         return a;
     }
-
-    /** Alternate method end */
 
     public static void main(String[] args) {
         TERenderer ter = new TERenderer();
