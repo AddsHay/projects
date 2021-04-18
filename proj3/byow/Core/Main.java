@@ -6,14 +6,13 @@ import byow.TileEngine.Tileset;
 import java.lang.Math;
 import java.util.Random;
 
-import static byow.Core.Main.RandomWorld.drawbuild;
 
 /** This is the main entry point for the program. This class simply parses
  *  the command line inputs, and lets the byow.Core.Engine class take over
  *  in either keyboard or input string mode.
  */
 public class Main {
-    public static void main(String[] args) {
+    public void main(String[] args) {
         if (args.length > 2) {
             System.out.println("Can only have two arguments - the flag and input string");
             System.exit(0);
@@ -21,8 +20,10 @@ public class Main {
             Engine engine = new Engine();
             engine.interactWithInputString(args[1]);
             System.out.println(engine.toString());
-        // DO NOT CHANGE THESE LINES YET ;)
-        } else if (args.length == 2 && args[0].equals("-p")) { System.out.println("Coming soon."); } 
+            // DO NOT CHANGE THESE LINES YET ;)
+        } else if (args.length == 2 && args[0].equals("-p")) {
+            System.out.println("Coming soon.");
+        }
         // DO NOT CHANGE THESE LINES YET ;)
         else {
             Engine engine = new Engine();
@@ -30,13 +31,14 @@ public class Main {
         }
     }
 
-    public static class RandomWorld {
-        private static final int WIDTH = 80;
-        private static final int HEIGHT = 30;
-        public static String SEED = "2873124";
-        private static final Random RANDOM = new Random(Long.parseLong(SEED));
+    public class RandomWorld {
+        public final int WIDTH = 80;
+        public final int HEIGHT = 30;
+        public String SEED = "2873124";
+        public Random RANDOM = new Random(Long.parseLong(SEED));
 
-        private static class Pos {
+
+        public class Pos {
             int x;
             int y;
 
@@ -44,13 +46,9 @@ public class Main {
                 this.x = x;
                 this.y = y;
             }
-
-            public Pos change(int oldx, int oldy) {
-                return new Pos(oldx + this.x, oldy + this.y);
-            }
         }
 
-        public static void createroom(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx, int dy) {
+        public void createroom(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx, int dy) {
             drawrow(tiles, p.x, p.y, walltile, dx);
             drawrow(tiles, p.x, p.y + dy - 1, walltile, dx);
             drawcolumn(tiles, p.x, p.y, walltile, dy);
@@ -58,19 +56,19 @@ public class Main {
             fillroom(tiles, p.x + 1, p.y + 1, floortile, dx - 2, dy - 2);
         }
 
-        public static void createhallvert(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dy) {
+        public void createhallvert(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dy) {
             drawcolumn(tiles, p.x - 1, p.y, walltile, dy);
             drawcolumn(tiles, p.x, p.y, floortile, dy);
             drawcolumn(tiles, p.x + 1, p.y, walltile, dy);
         }
 
-        public static void createhallhor(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx) {
+        public void createhallhor(TETile[][] tiles, TETile walltile, TETile floortile, Pos p, int dx) {
             drawrow(tiles, p.x, p.y - 1, walltile, dx);
             drawrow(tiles, p.x, p.y, floortile, dx);
             drawrow(tiles, p.x, p.y + 1, walltile, dx);
         }
 
-        private static void drawrow(TETile[][] tiles, int x, int y, TETile tile, int dx) {
+        public void drawrow(TETile[][] tiles, int x, int y, TETile tile, int dx) {
             if (dx > 0) {
                 if (tiles[x][y] != Tileset.FLOOR) {
                     tiles[x][y] = tile;
@@ -85,7 +83,7 @@ public class Main {
             }
         }
 
-        private static void drawcolumn(TETile[][] tiles, int x, int y, TETile tile, int dy) {
+        public void drawcolumn(TETile[][] tiles, int x, int y, TETile tile, int dy) {
             if (dy > 0) {
                 if (tiles[x][y] != Tileset.FLOOR) {
                     tiles[x][y] = tile;
@@ -100,14 +98,14 @@ public class Main {
             }
         }
 
-        private static void fillroom(TETile[][] tiles, int x, int y, TETile floortile, int dx, int dy) {
+        public void fillroom(TETile[][] tiles, int x, int y, TETile floortile, int dx, int dy) {
             if (dy > 0) {
                 drawrow(tiles, x, y, floortile, dx);
                 fillroom(tiles, x, y + 1, floortile, dx, dy - 1);
             }
         }
 
-        public static void fillWithNothing(TETile[][] tiles) {
+        public void fillWithNothing(TETile[][] tiles) {
             int height = tiles[0].length;
             int width = tiles.length;
             for (int x = 0; x < width; x += 1) {
@@ -117,8 +115,10 @@ public class Main {
             }
         }
 
-        /** Return the maximum dimension without going over */
-        public static int createdimension(int p, int w) {
+        /**
+         * Return the maximum dimension without going over
+         */
+        public int createdimension(int p, int w) {
             int d = RandomUtils.uniform(RANDOM, 3, 10);
             if (p + d > w - 1) {
                 return w - p - 2;
@@ -129,9 +129,12 @@ public class Main {
             }
         }
 
-        /** Alternative method I'm working on below */
-        public static void drawbuild(TETile[][] tiles, TETile walltile, TETile floortile, String inputseed) {
-            SEED = inputseed;
+        /**
+         * Alternative method I'm working on below
+         */
+        public void drawbuild(TETile[][] tiles, TETile walltile, TETile floortile, String inputseed) {
+            Random root = new Random(Long.parseLong(inputseed));
+            RANDOM = root;
             fillWithNothing(tiles);
             Pos p = new Pos(RandomUtils.uniform(RANDOM, 10, WIDTH - 10), RandomUtils.uniform(RANDOM, 10, HEIGHT - 10));
             Pos pz = new Pos(p.x + 1, p.y + 1);
@@ -154,7 +157,7 @@ public class Main {
             bloom(base);
         }
 
-        public static void bloom(Steps base) {
+        public void bloom(Steps base) {
             // Build structure (r,h,v) with wall/floor on tiles at p dimensions dx/dy
             //     Use checker to test viability, build only if possible
             // Add exit location data to the end of a list
@@ -167,7 +170,7 @@ public class Main {
             switch (base.structure) {
                 case "room":
                     createroom(base.tile, base.wall, base.floor, base.p, base.dx, base.dy);
-                    base.tile[base.pz.x][base.pz.y] = Tileset.FLOOR;
+                    base.tile[base.pz.x][base.pz.y] = Tileset.FLOWER;
                     break;
                 case "hall":
                     switch (base.direction) {
@@ -225,7 +228,7 @@ public class Main {
             }
         }
 
-        private static void fix(Steps step) {
+        public void fix(Steps step) {
             if (step.structure.equals("room")) {
                 fixroom(step);
             } else if (step.structure.equals("hall")) {
@@ -233,11 +236,11 @@ public class Main {
             }
         }
 
-        private static void fixroom(Steps step) {
+        public void fixroom(Steps step) {
             fixroomborder(step);
         }
 
-        private static void fixroomborder(Steps step) {
+        public void fixroomborder(Steps step) {
             if (step.p.x < 3) {
                 step.p.x = 3;
                 step.dx -= 3;
@@ -258,7 +261,7 @@ public class Main {
             }
         }
 
-        private static void fixhall(Steps step) {
+        public void fixhall(Steps step) {
             if (step.direction.equals("up")) {
                 if (step.p.y + step.dy > HEIGHT - 3) {
                     step.dy = Math.max(HEIGHT - 3 - step.p.y, 0);
@@ -298,7 +301,7 @@ public class Main {
                             break;
                         }
                     }
-                    if (step.tile[step.p.x][step.p.y - i] == step.floor  ||
+                    if (step.tile[step.p.x][step.p.y - i] == step.floor ||
                             step.tile[step.p.x - 1][step.p.y - i] == step.floor ||
                             step.tile[step.p.x + 1][step.p.y - i] == step.floor) {
                         step.structure = "o";
@@ -322,7 +325,7 @@ public class Main {
                             break;
                         }
                     }
-                    if (step.tile[step.p.x + i][step.p.y] == step.floor  ||
+                    if (step.tile[step.p.x + i][step.p.y] == step.floor ||
                             step.tile[step.p.x + i][step.p.y - 1] == step.floor ||
                             step.tile[step.p.x + i][step.p.y + 1] == step.floor) {
                         step.structure = "o";
@@ -346,7 +349,7 @@ public class Main {
                             break;
                         }
                     }
-                    if (step.tile[step.p.x - i][step.p.y] == step.floor   ||
+                    if (step.tile[step.p.x - i][step.p.y] == step.floor ||
                             step.tile[step.p.x - i][step.p.y - 1] == step.floor ||
                             step.tile[step.p.x - i][step.p.y + 1] == step.floor) {
                         step.structure = "o";
@@ -357,24 +360,27 @@ public class Main {
             }
         }
 
-        /** Storage unit for the upcoming steps */
-        private static class Steps {
-            private Steps next = null;
-            private Steps last = null;
-            private TETile[][] tile;
-            private TETile wall;
-            private TETile floor;
+        /**
+         * Storage unit for the upcoming steps
+         */
+        public class Steps {
+            public Steps next = null;
+            public Steps last = null;
+            public TETile[][] tile;
+            public TETile wall;
+            public TETile floor;
             // p = Constructing position
             // pz = Entrance position
-            private Pos p;
-            private Pos pz;
-            private int dx;
-            private int dy;
-            private double zero;
+            public Pos p;
+            public Pos pz;
+            public int dx;
+            public int dy;
+            public double zero;
             // structure: room, hall
             // direction: up, down, left, right, o (do nothing), x (end)
-            private String structure;
-            private String direction;
+            public String structure;
+            public String direction;
+
             Steps(Steps nx, Steps ls, TETile[][] tls, TETile wltl, TETile fltl,
                   Pos ps, Pos psz, int drx, int dry, double zro, String str, String dir) {
                 next = nx;
@@ -392,7 +398,7 @@ public class Main {
             }
         }
 
-        private static Steps stepmaker(Steps base) {
+        public Steps stepmaker(Steps base) {
             Steps a = new Steps(base.last, base.last.last, base.tile, base.wall, base.floor,
                     null, null, 0, 0, 0, "x", "x");
             if (base.structure.equals("room")) {
@@ -401,7 +407,7 @@ public class Main {
                 if (r < 0) {
                     a.pz = new Pos(r * -1 + base.p.x, base.p.y + ((base.dy - 1) * y));
                 } else {
-                    a.pz = new Pos( base.p.x + ((base.dx - 1) * y), r + 1 + base.p.y);
+                    a.pz = new Pos(base.p.x + ((base.dx - 1) * y), r + 1 + base.p.y);
                 }
                 if (r < 0 && y == 0) {
                     a.direction = "down";
@@ -455,7 +461,8 @@ public class Main {
                             a.pz.x += 1;
                         }
                         break;
-                    default: a.direction = "o";
+                    default:
+                        a.direction = "o";
                 }
             } else {
                 a.structure = "o";
@@ -513,7 +520,7 @@ public class Main {
             return a;
         }
 
-        public static void main(String[] args) {
+        public void main(String[] args) {
             TERenderer ter = new TERenderer();
             ter.initialize(WIDTH, HEIGHT);
             TETile[][] tiles = new TETile[WIDTH][HEIGHT];
@@ -521,47 +528,47 @@ public class Main {
 
             ter.renderFrame(tiles);
         }
-    }
 
-    public static class Engine {
-        TERenderer ter = new TERenderer();
-        /* Feel free to change the width and height. */
-        public final int WIDTH = 80;
-        public final int HEIGHT = 30;
-        /**
-         * Method used for exploring a fresh world. This method should handle all inputs,
-         * including inputs from the main menu.
-         */
-        public void interactWithKeyboard() {
+        public class Engine {
+            TERenderer ter = new TERenderer();
+            /* Feel free to change the width and height. */
+            public final int WIDTH = 80;
+            public final int HEIGHT = 30;
+
+            /**
+             * Method used for exploring a fresh world. This method should handle all inputs,
+             * including inputs from the main menu.
+             */
+            public void interactWithKeyboard() {
+            }
+
+            /**
+             * Method used for autograding and testing your code. The input string will be a series
+             * of characters (for example, "n123sswwdasdassadwas", "n123sss:q", "lwww". The engine should
+             * behave exactly as if the user typed these characters into the engine using
+             * interactWithKeyboard.
+             * <p>
+             * Recall that strings ending in ":q" should cause the game to quite save. For example,
+             * if we do interactWithInputString("n123sss:q"), we expect the game to run the first
+             * 7 commands (n123sss) and then quit and save. If we then do
+             * interactWithInputString("l"), we should be back in the exact same state.
+             * <p>
+             * In other words, both of these calls:
+             * - interactWithInputString("n123sss:q")
+             * - interactWithInputString("lww")
+             * <p>
+             * should yield the exact same world state as:
+             * - interactWithInputString("n123sssww")
+             *
+             * @param input the input string to feed to your program
+             * @return the 2D TETile[][] representing the state of the world
+             */
+            public TETile[][] interactWithInputString(String input) {
+                String inputseed = input;
+                TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
+                drawbuild(finalWorldFrame, Tileset.WALL, Tileset.FLOOR, inputseed);
+                return finalWorldFrame;
+            }
         }
-
-        /**
-         * Method used for autograding and testing your code. The input string will be a series
-         * of characters (for example, "n123sswwdasdassadwas", "n123sss:q", "lwww". The engine should
-         * behave exactly as if the user typed these characters into the engine using
-         * interactWithKeyboard.
-         *
-         * Recall that strings ending in ":q" should cause the game to quite save. For example,
-         * if we do interactWithInputString("n123sss:q"), we expect the game to run the first
-         * 7 commands (n123sss) and then quit and save. If we then do
-         * interactWithInputString("l"), we should be back in the exact same state.
-         *
-         * In other words, both of these calls:
-         *   - interactWithInputString("n123sss:q")
-         *   - interactWithInputString("lww")
-         *
-         * should yield the exact same world state as:
-         *   - interactWithInputString("n123sssww")
-         *
-         * @param input the input string to feed to your program
-         * @return the 2D TETile[][] representing the state of the world
-         */
-        public TETile[][] interactWithInputString(String input) {
-            String inputseed = input;
-            TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
-            drawbuild(finalWorldFrame, Tileset.WALL, Tileset.FLOOR, inputseed);
-            return finalWorldFrame;
-        }
     }
-
 }
