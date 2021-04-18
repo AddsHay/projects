@@ -604,7 +604,7 @@ public class RandomWorld {
         return a;
     }
 
-    public   void main(String[] args) {
+    public void main(String[] args) {
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
         TETile[][] tiles = new TETile[WIDTH][HEIGHT];

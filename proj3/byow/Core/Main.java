@@ -17,9 +17,9 @@ public class Main {
             System.out.println("Can only have two arguments - the flag and input string");
             System.exit(0);
         } else if (args.length == 2 && args[0].equals("-s")) {
-            Engine engine = new Engine();
-            engine.interactWithInputString(args[1]);
-            System.out.println(engine.toString());
+            Engine Engine = new Engine();
+            Main.Engine.interactWithInputString(args[1]);
+            System.out.println(Engine.toString());
             // DO NOT CHANGE THESE LINES YET ;)
         } else if (args.length == 2 && args[0].equals("-p")) {
             System.out.println("Coming soon.");
@@ -34,8 +34,8 @@ public class Main {
     public class RandomWorld {
         public final int WIDTH = 80;
         public final int HEIGHT = 30;
-        public String SEED = "2873124";
-        public Random RANDOM = new Random(Long.parseLong(SEED));
+        private long SEED;
+        private Random RANDOM;
 
 
         public class Pos {
@@ -133,8 +133,7 @@ public class Main {
          * Alternative method I'm working on below
          */
         public void drawbuild(TETile[][] tiles, TETile walltile, TETile floortile, String inputseed) {
-            Random root = new Random(Long.parseLong(inputseed));
-            RANDOM = root;
+            RANDOM = new Random(Long.parseLong(inputseed));
             fillWithNothing(tiles);
             Pos p = new Pos(RandomUtils.uniform(RANDOM, 10, WIDTH - 10), RandomUtils.uniform(RANDOM, 10, HEIGHT - 10));
             Pos pz = new Pos(p.x + 1, p.y + 1);
@@ -519,56 +518,46 @@ public class Main {
             }
             return a;
         }
+    }
+    public class Engine {
+        TERenderer ter = new TERenderer();
+        /* Feel free to change the width and height. */
+        public final int WIDTH = 80;
+        public final int HEIGHT = 30;
 
-        public void main(String[] args) {
-            TERenderer ter = new TERenderer();
-            ter.initialize(WIDTH, HEIGHT);
-            TETile[][] tiles = new TETile[WIDTH][HEIGHT];
-            drawbuild(tiles, Tileset.WALL, Tileset.FLOOR, SEED);
-
-            ter.renderFrame(tiles);
+        /**
+         * Method used for exploring a fresh world. This method should handle all inputs,
+         * including inputs from the main menu.
+         */
+        public void interactWithKeyboard() {
         }
 
-        public class Engine {
-            TERenderer ter = new TERenderer();
-            /* Feel free to change the width and height. */
-            public final int WIDTH = 80;
-            public final int HEIGHT = 30;
-
-            /**
-             * Method used for exploring a fresh world. This method should handle all inputs,
-             * including inputs from the main menu.
-             */
-            public void interactWithKeyboard() {
-            }
-
-            /**
-             * Method used for autograding and testing your code. The input string will be a series
-             * of characters (for example, "n123sswwdasdassadwas", "n123sss:q", "lwww". The engine should
-             * behave exactly as if the user typed these characters into the engine using
-             * interactWithKeyboard.
-             * <p>
-             * Recall that strings ending in ":q" should cause the game to quite save. For example,
-             * if we do interactWithInputString("n123sss:q"), we expect the game to run the first
-             * 7 commands (n123sss) and then quit and save. If we then do
-             * interactWithInputString("l"), we should be back in the exact same state.
-             * <p>
-             * In other words, both of these calls:
-             * - interactWithInputString("n123sss:q")
-             * - interactWithInputString("lww")
-             * <p>
-             * should yield the exact same world state as:
-             * - interactWithInputString("n123sssww")
-             *
-             * @param input the input string to feed to your program
-             * @return the 2D TETile[][] representing the state of the world
-             */
-            public TETile[][] interactWithInputString(String input) {
-                String inputseed = input;
-                TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
-                drawbuild(finalWorldFrame, Tileset.WALL, Tileset.FLOOR, inputseed);
-                return finalWorldFrame;
-            }
+        /**
+         * Method used for autograding and testing your code. The input string will be a series
+         * of characters (for example, "n123sswwdasdassadwas", "n123sss:q", "lwww". The engine should
+         * behave exactly as if the user typed these characters into the engine using
+         * interactWithKeyboard.
+         * <p>
+         * Recall that strings ending in ":q" should cause the game to quite save. For example,
+         * if we do interactWithInputString("n123sss:q"), we expect the game to run the first
+         * 7 commands (n123sss) and then quit and save. If we then do
+         * interactWithInputString("l"), we should be back in the exact same state.
+         * <p>
+         * In other words, both of these calls:
+         * - interactWithInputString("n123sss:q")
+         * - interactWithInputString("lww")
+         * <p>
+         * should yield the exact same world state as:
+         * - interactWithInputString("n123sssww")
+         *
+         * @param input the input string to feed to your program
+         * @return the 2D TETile[][] representing the state of the world
+         */
+        public TETile[][] interactWithInputString(String input) {
+            String inputseed = input;
+            TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
+            RandomWorld.drawbuild(finalWorldFrame, Tileset.WALL, Tileset.FLOOR, inputseed);
+            return finalWorldFrame;
         }
     }
 }
