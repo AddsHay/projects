@@ -1,4 +1,3 @@
-
 package byow.Core;
 
 import byow.TileEngine.TERenderer;
@@ -11,7 +10,7 @@ public class Engine {
     /* Feel free to change the width and height. */
     public static final int WIDTH = 50;
     public static final int HEIGHT = 50;
-
+    RandomWorld object = new RandomWorld();
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
      * including inputs from the main menu.
@@ -42,7 +41,6 @@ public class Engine {
      * take off the na nd the s and then parse long of the remainder
      */
     public TETile[][] interactWithInputString(String input) {
-        RandomWorld object = new RandomWorld();
         String inputseed = null;
         for (int i = 0; i < input.length(); i++) {
             if (Character.isLetter(input.charAt(i))) {

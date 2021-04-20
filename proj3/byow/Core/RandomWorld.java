@@ -1,6 +1,5 @@
 package byow.Core;
 
-import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 import java.lang.Math;
@@ -90,7 +89,7 @@ public class RandomWorld {
         }
     }
 
-    /** Return the maximum dimension without going over */
+    /** Return the maximum dimension/length of a construct without going over the bounds of WIDTH or HEIGHT */
     public int createdimension(int p, int w) {
         int d = RandomUtils.uniform(RANDOM, 3, 10);
         if (p + d > w - 1) {
@@ -181,17 +180,6 @@ public class RandomWorld {
             }
         }
         // Run next thing
-        /**
-         System.out.println(base.structure + base.direction);
-         if (base.pz != null) {
-         System.out.print(base.p.x);
-         System.out.println(base.p.y);
-         System.out.print(base.dx);
-         System.out.println(base.dy);
-         System.out.print(base.pz.x);
-         System.out.println(base.pz.y);
-         }
-         */
         if (!base.structure.equals("x")) {
             bloom(base.next);
         }
@@ -331,8 +319,8 @@ public class RandomWorld {
 
     /** Storage unit for the upcoming steps */
     private class Steps {
-        private Steps next = null;
-        private Steps last = null;
+        private Steps next;
+        private Steps last;
         private TETile[][] tile;
         private TETile wall;
         private TETile floor;
@@ -387,14 +375,11 @@ public class RandomWorld {
                 a.direction = "o";
             }
         } else if (base.structure.equals("hall")) {
-            if (base.direction.equals("left")) {
-                a.pz = new Pos(base.p.x - base.dx + 1, base.p.y);
-            } else if (base.direction.equals("right")) {
-                a.pz = new Pos(base.p.x + base.dx - 1, base.p.y);
-            } else if (base.direction.equals("up")) {
-                a.pz = new Pos(base.p.x, base.p.y + base.dy - 1);
-            } else if (base.direction.equals("down")) {
-                a.pz = new Pos(base.p.x, base.p.y - base.dy + 1);
+            switch (base.direction) {
+                case "left" -> a.pz = new Pos(base.p.x - base.dx + 1, base.p.y);
+                case "right" -> a.pz = new Pos(base.p.x + base.dx - 1, base.p.y);
+                case "up" -> a.pz = new Pos(base.p.x, base.p.y + base.dy - 1);
+                case "down" -> a.pz = new Pos(base.p.x, base.p.y - base.dy + 1);
             }
             switch (RandomUtils.uniform(RANDOM, 3)) {
                 case 0:
@@ -441,22 +426,17 @@ public class RandomWorld {
             a.dy = RandomUtils.uniform(RANDOM, 3, 10);
             a.p = new Pos(a.pz.x, a.pz.y);
             switch (a.direction) {
-                case "left":
+                case "left" -> {
                     a.p.x -= a.dx - 1;
                     a.p.y -= RandomUtils.uniform(RANDOM, 1, a.dy - 1);
-                    break;
-                case "right":
-                    a.p.y -= RandomUtils.uniform(RANDOM, 1, a.dy - 1);
-                    break;
-                case "up":
-                    a.p.x -= RandomUtils.uniform(RANDOM, 1, a.dx - 1);
-                    break;
-                case "down":
+                }
+                case "right" -> a.p.y -= RandomUtils.uniform(RANDOM, 1, a.dy - 1);
+                case "up" -> a.p.x -= RandomUtils.uniform(RANDOM, 1, a.dx - 1);
+                case "down" -> {
                     a.p.x -= RandomUtils.uniform(RANDOM, 1, a.dx - 1);
                     a.p.y -= a.dy - 1;
-                    break;
-                default:
-                    a.structure = "o";
+                }
+                default -> a.structure = "o";
             }
         } else {
             // hall
@@ -465,33 +445,19 @@ public class RandomWorld {
             a.dx = RandomUtils.uniform(RANDOM, 3, 10);
             a.dy = RandomUtils.uniform(RANDOM, 3, 10);
             switch (a.direction) {
-                case "left":
-                    a.pz.x -= a.dx - 1;
-                    break;
-                case "right":
-                    a.pz.x += a.dx - 1;
-                    break;
-                case "up":
-                    a.pz.y += a.dx - 1;
-                    break;
-                case "down":
-                    a.pz.y -= a.dy - 1;
-                    break;
-                default:
+                case "left" -> a.pz.x -= a.dx - 1;
+                case "right" -> a.pz.x += a.dx - 1;
+                case "up" -> a.pz.y += a.dx - 1;
+                case "down" -> a.pz.y -= a.dy - 1;
+                default -> {
                     a.structure = "o";
                     a.direction = "o";
+                }
             }
         }
         return a;
     }
-    public void main(String[] args) {
-        /**
-         TERenderer ter = new TERenderer();
-         ter.initialize(WIDTH, HEIGHT);
-         TETile[][] tiles = new TETile[WIDTH][HEIGHT];
-         drawbuild(tiles, Tileset.WALL, Tileset.FLOOR, SEED);
-         ter.renderFrame(tiles);
-         */
+    public static void main(String[] args) {
         RandomWorld object = new RandomWorld();
     }
 }
