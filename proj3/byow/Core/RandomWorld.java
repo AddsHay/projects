@@ -101,7 +101,7 @@ public class RandomWorld {
             return d;
         }
     }
-    
+
     public void drawbuild(TETile[][] tiles, TETile walltile, TETile floortile, Long inputseed) {
         RANDOM = new Random(inputseed);
         fillWithNothing(tiles);
@@ -485,6 +485,13 @@ public class RandomWorld {
         return a;
     }
     public void main(String[] args) {
+        /**
+         TERenderer ter = new TERenderer();
+         ter.initialize(WIDTH, HEIGHT);
+         TETile[][] tiles = new TETile[WIDTH][HEIGHT];
+         drawbuild(tiles, Tileset.WALL, Tileset.FLOOR, SEED);
+         ter.renderFrame(tiles);
+         */
         RandomWorld object = new RandomWorld();
     }
 }
