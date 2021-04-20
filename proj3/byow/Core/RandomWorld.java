@@ -457,7 +457,4 @@ public class RandomWorld {
         }
         return a;
     }
-    public static void main(String[] args) {
-        RandomWorld object = new RandomWorld();
-    }
 }
