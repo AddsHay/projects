@@ -101,10 +101,7 @@ public class RandomWorld {
             return d;
         }
     }
-
-    /** Alternative method I'm working on below
-     * make drawbuild an instance method by storing the tiles before
-     * */
+    
     public void drawbuild(TETile[][] tiles, TETile walltile, TETile floortile, Long inputseed) {
         RANDOM = new Random(inputseed);
         fillWithNothing(tiles);
