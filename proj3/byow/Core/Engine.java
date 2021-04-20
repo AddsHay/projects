@@ -3,12 +3,14 @@ package byow.Core;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
+import java.lang.String;
 
 public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
-    public final int WIDTH = 80;
-    public final int HEIGHT = 30;
+    public static final int WIDTH = 50;
+    public static final int HEIGHT = 50;
+
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
      * including inputs from the main menu.
@@ -36,11 +38,23 @@ public class Engine {
      *
      * @param input the input string to feed to your program
      * @return the 2D TETile[][] representing the state of the world
+     * take off the na nd the s and then parse long of the remainder
      */
     public TETile[][] interactWithInputString(String input) {
-        String inputseed = input;
+        RandomWorld object = new RandomWorld();
+        String inputseed = null;
+        for (int i = 0; i < input.length(); i++) {
+            if (Character.isLetter(input.charAt(i))) {
+                inputseed = input.substring(0, i) + input.substring(i + 1);
+                for (int x = 0; x < inputseed.length(); x++) {
+                    if (Character.isLetter(inputseed.charAt(x))) {
+                        inputseed = inputseed.substring(0, x) + inputseed.substring(x + 1);
+                    }
+                }
+            }
+        }
         TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
-        byow.Core.Main.RandomWorld.drawbuild(finalWorldFrame, Tileset.WALL, Tileset.FLOOR, inputseed);
+        object.drawbuild(finalWorldFrame, Tileset.WALL, Tileset.FLOOR, Long.parseLong(inputseed));
         return finalWorldFrame;
     }
 }
