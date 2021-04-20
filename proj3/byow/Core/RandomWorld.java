@@ -12,7 +12,7 @@ public class RandomWorld {
     public long SEED = 45927;
     private Random RANDOM = new Random(SEED);
 
-    private class Pos {
+    private static class Pos {
         int x;
         int y;
 
@@ -318,12 +318,12 @@ public class RandomWorld {
     }
 
     /** Storage unit for the upcoming steps */
-    private class Steps {
+    private static class Steps {
         private Steps next;
         private Steps last;
-        private TETile[][] tile;
-        private TETile wall;
-        private TETile floor;
+        private final TETile[][] tile;
+        private final TETile wall;
+        private final TETile floor;
         // p = Constructing position
         // pz = Entrance position
         private Pos p;
@@ -361,7 +361,7 @@ public class RandomWorld {
             if (r < 0) {
                 a.pz = new Pos(r * -1 + base.p.x, base.p.y + ((base.dy - 1) * y));
             } else {
-                a.pz = new Pos( base.p.x + ((base.dx - 1) * y), r + 1 + base.p.y);
+                a.pz = new Pos(base.p.x + ((base.dx - 1) * y), r + 1 + base.p.y);
             }
             if (r < 0 && y == 0) {
                 a.direction = "down";
