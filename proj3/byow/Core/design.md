@@ -28,3 +28,6 @@ Logic of Bloom:
         1. 'Room' or 'hall', up/down/left/right
    3. Add random number of random structures to the Steps list
    4. Run bloom(base) on the next item in Steps
+
+
+

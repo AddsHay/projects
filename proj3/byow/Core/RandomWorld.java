@@ -2,15 +2,20 @@ package byow.Core;
 
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
+
+import java.io.Serializable;
 import java.lang.Math;
 import java.util.Random;
+import java.io.File;
 
 
-public class RandomWorld {
+public class RandomWorld implements Serializable {
     private static final int WIDTH = 50;
     private static final int HEIGHT = 50;
     public long SEED = 45927;
     private Random RANDOM = new Random(SEED);
+    public static final File CWD = new File(System.getProperty("user.dir"));
+    public File savedstate = Utils.join(CWD, "savedstate");
 
     private static class Pos {
         int x;
@@ -456,5 +461,74 @@ public class RandomWorld {
             }
         }
         return a;
+    }
+
+    public void placeavatar(TETile[][] tiles, TETile avatartile) {
+        Pos p = new Pos(RandomUtils.uniform(RANDOM, 3, WIDTH - 3), RandomUtils.uniform(RANDOM, 3, HEIGHT - 3));
+        if (tiles[p.x][p.y] != Tileset.FLOOR) {
+            placeavatar(tiles, avatartile);
+        } else {
+            tiles[p.x][p.y] = avatartile;
+        }
+    }
+
+    public void takeaction(TETile[][] tiles, String commands, TETile walltile, TETile floortile, TETile avatartile) {
+        Pos p = new Pos(RandomUtils.uniform(RANDOM, 3, WIDTH - 3), RandomUtils.uniform(RANDOM, 3, HEIGHT - 3));
+        if (tiles[p.x][p.y] != Tileset.FLOOR) {
+            placeavatar(tiles, avatartile);
+        } else {
+            tiles[p.x][p.y] = avatartile;
+        }
+        Pos avatarpos = p;
+        for (int i = 0; i < commands.length(); i++) {
+            switch (Character.toString(commands.charAt(i))) {
+                case "W":
+                    if (tiles[avatarpos.x][avatarpos.y + 1] != walltile) {
+                        tiles[avatarpos.x][avatarpos.y] = floortile;
+                        avatarpos.y += 1;
+                        tiles[avatarpos.x][avatarpos.y] = avatartile;
+                    }
+                case "A":
+                    if (tiles[avatarpos.x - 1][avatarpos.y] != walltile) {
+                        tiles[avatarpos.x][avatarpos.y] = floortile;
+                        avatarpos.x += -1;
+                        tiles[avatarpos.x][avatarpos.y] = avatartile;
+                    }
+                case "S":
+                    if (tiles[avatarpos.x][avatarpos.y - 1] != walltile) {
+                        tiles[avatarpos.x][avatarpos.y] = floortile;
+                        avatarpos.y -= 1;
+                        tiles[avatarpos.x][avatarpos.y] = avatartile;
+                    }
+                case "D":
+                    if (tiles[avatarpos.x + 1][avatarpos.y] != walltile) {
+                        tiles[avatarpos.x][avatarpos.y] = floortile;
+                        avatarpos.x += 1;
+                        tiles[avatarpos.x][avatarpos.y] = avatartile;
+                    }
+                case ":":
+                    if (Character.toString(commands.charAt(i + 1)).equals("Q")) {
+                        File savedstate = Utils.join(CWD, "savedstate.txt");
+                        String inputseed = "n" + SEED + "s" + commands.substring(0, commands.length() - 2);
+                        Utils.writeContents(savedstate, inputseed);
+                        System.exit(0);
+                    }
+                case "L":
+                    if (savedstate.isFile()) {
+                        String inputstring = Utils.readContentsAsString(savedstate);
+                        String inputseed = inputstring.substring(1);
+                        for (int x = 0; x < inputseed.length(); x++) {
+                            if (Character.isLetter(inputseed.charAt(x))) {
+                                commands = inputseed.substring(x + 1);
+                                inputseed = inputseed.substring(0, x);
+                                break;
+                            }
+                        }
+                        drawbuild(tiles, Tileset.WALL, Tileset.FLOOR, Long.parseLong(inputseed));
+                        takeaction(tiles, commands, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
+                    }
+                default:
+            }
+        }
     }
 }

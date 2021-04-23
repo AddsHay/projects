@@ -3,7 +3,6 @@ package byow.Core;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
-import java.lang.String;
 
 public class Engine {
     TERenderer ter = new TERenderer();
@@ -16,8 +15,8 @@ public class Engine {
      * including inputs from the main menu.
      */
     public void interactWithKeyboard() {
-    }
 
+    }
     /**
      * Method used for autograding and testing your code. The input string will be a series
      * of characters (for example, "n123sswwdasdassadwas", "n123sss:q", "lwww". The engine should
@@ -41,19 +40,25 @@ public class Engine {
      * take off the na nd the s and then parse long of the remainder
      */
     public TETile[][] interactWithInputString(String input) {
+        TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
         String inputseed = null;
-        for (int i = 0; i < input.length(); i++) {
-            if (Character.isLetter(input.charAt(i))) {
-                inputseed = input.substring(0, i) + input.substring(i + 1);
-                for (int x = 0; x < inputseed.length(); x++) {
-                    if (Character.isLetter(inputseed.charAt(x))) {
-                        inputseed = inputseed.substring(0, x) + inputseed.substring(x + 1);
-                    }
+        String commands = null;
+        if (Character.toString(input.charAt(0)).equals("n") || Character.toString(input.charAt(0)).equals("N")) {
+            inputseed = input.substring(1);
+            for (int i = 0; i < inputseed.length() ; i++) {
+                if (Character.isLetter(inputseed.charAt(i))) {
+                    commands = inputseed.substring(i + 1);
+                    inputseed = inputseed.substring(0, i);
+                    break;
                 }
             }
         }
-        TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
-        object.drawbuild(finalWorldFrame, Tileset.WALL, Tileset.FLOOR, Long.parseLong(inputseed));
+        if (Character.toString(input.charAt(0)).equals("L") || Character.toString(input.charAt(0)).equals("l")) {
+            object.takeaction(finalWorldFrame, input, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
+        } else {
+            object.drawbuild(finalWorldFrame, Tileset.WALL, Tileset.FLOOR, Long.parseLong(inputseed));
+            object.takeaction(finalWorldFrame, commands, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
+        }
         return finalWorldFrame;
     }
 }
