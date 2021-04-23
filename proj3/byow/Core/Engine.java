@@ -43,9 +43,10 @@ public class Engine {
         TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
         String inputseed = null;
         String commands = null;
-        if (Character.toString(input.charAt(0)).equals("n") || Character.toString(input.charAt(0)).equals("N")) {
+        if (Character.toString(input.charAt(0)).equals("n")
+                || Character.toString(input.charAt(0)).equals("N")) {
             inputseed = input.substring(1);
-            for (int i = 0; i < inputseed.length() ; i++) {
+            for (int i = 0; i < inputseed.length(); i++) {
                 if (Character.isLetter(inputseed.charAt(i))) {
                     commands = inputseed.substring(i + 1);
                     inputseed = inputseed.substring(0, i);
@@ -53,11 +54,14 @@ public class Engine {
                 }
             }
         }
-        if (Character.toString(input.charAt(0)).equals("L") || Character.toString(input.charAt(0)).equals("l")) {
+        if (Character.toString(input.charAt(0)).equals("L")
+                || Character.toString(input.charAt(0)).equals("l")) {
             object.takeaction(finalWorldFrame, input, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
         } else {
-            object.drawbuild(finalWorldFrame, Tileset.WALL, Tileset.FLOOR, Long.parseLong(inputseed));
-            object.takeaction(finalWorldFrame, commands, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
+            object.drawbuild(finalWorldFrame, Tileset.WALL,
+                    Tileset.FLOOR, Long.parseLong(inputseed));
+            object.takeaction(finalWorldFrame, commands, Tileset.WALL,
+                    Tileset.FLOOR, Tileset.AVATAR);
         }
         return finalWorldFrame;
     }

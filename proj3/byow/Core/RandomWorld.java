@@ -2,7 +2,6 @@ package byow.Core;
 
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
-
 import java.io.Serializable;
 import java.lang.Math;
 import java.util.Random;
@@ -507,13 +506,52 @@ public class RandomWorld implements Serializable {
                         tiles[avatarpos.x][avatarpos.y] = avatartile;
                     }
                 case ":":
-                    if (Character.toString(commands.charAt(i + 1)).equals("Q")) {
+                    if (Character.toString(commands.charAt(i + 1)).equals("Q")
+                            || Character.toString(commands.charAt(i + 1)).equals("q")) {
                         File savedstate = Utils.join(CWD, "savedstate.txt");
                         String inputseed = "n" + SEED + "s" + commands.substring(0, commands.length() - 2);
                         Utils.writeContents(savedstate, inputseed);
                         System.exit(0);
                     }
                 case "L":
+                    if (savedstate.isFile()) {
+                        String inputstring = Utils.readContentsAsString(savedstate);
+                        String inputseed = inputstring.substring(1);
+                        for (int x = 0; x < inputseed.length(); x++) {
+                            if (Character.isLetter(inputseed.charAt(x))) {
+                                commands = inputseed.substring(x + 1);
+                                inputseed = inputseed.substring(0, x);
+                                break;
+                            }
+                        }
+                        drawbuild(tiles, Tileset.WALL, Tileset.FLOOR, Long.parseLong(inputseed));
+                        takeaction(tiles, commands, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
+                    }
+                case "w":
+                    if (tiles[avatarpos.x][avatarpos.y + 1] != walltile) {
+                        tiles[avatarpos.x][avatarpos.y] = floortile;
+                        avatarpos.y += 1;
+                        tiles[avatarpos.x][avatarpos.y] = avatartile;
+                    }
+                case "a":
+                    if (tiles[avatarpos.x - 1][avatarpos.y] != walltile) {
+                        tiles[avatarpos.x][avatarpos.y] = floortile;
+                        avatarpos.x += -1;
+                        tiles[avatarpos.x][avatarpos.y] = avatartile;
+                    }
+                case "s":
+                    if (tiles[avatarpos.x][avatarpos.y - 1] != walltile) {
+                        tiles[avatarpos.x][avatarpos.y] = floortile;
+                        avatarpos.y -= 1;
+                        tiles[avatarpos.x][avatarpos.y] = avatartile;
+                    }
+                case "d":
+                    if (tiles[avatarpos.x + 1][avatarpos.y] != walltile) {
+                        tiles[avatarpos.x][avatarpos.y] = floortile;
+                        avatarpos.x += 1;
+                        tiles[avatarpos.x][avatarpos.y] = avatartile;
+                    }
+                case "l":
                     if (savedstate.isFile()) {
                         String inputstring = Utils.readContentsAsString(savedstate);
                         String inputseed = inputstring.substring(1);
