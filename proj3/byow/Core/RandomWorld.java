@@ -199,6 +199,7 @@ public class RandomWorld implements Serializable {
 
     private void fixroom(Steps step) {
         fixroomborder(step);
+        fixroomcollide(step);
     }
 
     private void fixroomborder(Steps step) {
@@ -219,6 +220,38 @@ public class RandomWorld implements Serializable {
         if (step.dx < 3 || step.dy < 3) {
             step.structure = "o";
             step.direction = "o";
+        }
+    }
+
+    private void fixroomcollide(Steps step) {
+        switch (step.direction) {
+            case "up":
+                int verlim = step.dy;
+                int leftlim = step.pz.x - step.p.x + 1;
+                int rightlim = step.p.x + step.dx - step.pz.x;
+                for (int i = step.p.x; i < step.p.x + step.dx; i += 1) {
+                    for (int j = 0; j < verlim; j += 1) {
+                        if (step.tile[i][step.p.y + j] == step.floor) {
+                            verlim = j;
+                        }
+                    }
+                }
+                for (int i = step.p.y; i < step.p.y + step.dy; i += 1) {
+                    for (int j = 0; j < leftlim; j += 1) {
+                        if (step.tile[i - j][j] == step.floor) {
+                            leftlim = j;
+                        }
+                    }
+                    for (int j = 0; j < rightlim; j += 1) {
+                        if (step.tile[i + j][j] == step.floor) {
+                            rightlim = j;
+                        }
+                    }
+                }
+                
+            case "down":
+            case "left":
+            case "right":
         }
     }
 
