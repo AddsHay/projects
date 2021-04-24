@@ -248,7 +248,9 @@ public class RandomWorld implements Serializable {
                         }
                     }
                 }
-                
+                if (verlim * step.dx > (leftlim + rightlim - 1) * step.dy) {
+                    
+                }
             case "down":
             case "left":
             case "right":
