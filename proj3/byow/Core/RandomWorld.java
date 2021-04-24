@@ -562,44 +562,6 @@ public class RandomWorld implements Serializable {
                         drawbuild(tiles, Tileset.WALL, Tileset.FLOOR, Long.parseLong(inputseed));
                         takeaction(tiles, commands, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
                     }
-                case "w":
-                    if (tiles[avatarpos.x][avatarpos.y + 1] != walltile) {
-                        tiles[avatarpos.x][avatarpos.y] = floortile;
-                        avatarpos.y += 1;
-                        tiles[avatarpos.x][avatarpos.y] = avatartile;
-                    }
-                case "a":
-                    if (tiles[avatarpos.x - 1][avatarpos.y] != walltile) {
-                        tiles[avatarpos.x][avatarpos.y] = floortile;
-                        avatarpos.x += -1;
-                        tiles[avatarpos.x][avatarpos.y] = avatartile;
-                    }
-                case "s":
-                    if (tiles[avatarpos.x][avatarpos.y - 1] != walltile) {
-                        tiles[avatarpos.x][avatarpos.y] = floortile;
-                        avatarpos.y -= 1;
-                        tiles[avatarpos.x][avatarpos.y] = avatartile;
-                    }
-                case "d":
-                    if (tiles[avatarpos.x + 1][avatarpos.y] != walltile) {
-                        tiles[avatarpos.x][avatarpos.y] = floortile;
-                        avatarpos.x += 1;
-                        tiles[avatarpos.x][avatarpos.y] = avatartile;
-                    }
-                case "l":
-                    if (savedstate.isFile()) {
-                        String inputstring = Utils.readContentsAsString(savedstate);
-                        String inputseed = inputstring.substring(1);
-                        for (int x = 0; x < inputseed.length(); x++) {
-                            if (Character.isLetter(inputseed.charAt(x))) {
-                                commands = inputseed.substring(x + 1);
-                                inputseed = inputseed.substring(0, x);
-                                break;
-                            }
-                        }
-                        drawbuild(tiles, Tileset.WALL, Tileset.FLOOR, Long.parseLong(inputseed));
-                        takeaction(tiles, commands, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
-                    }
                 default:
             }
         }
