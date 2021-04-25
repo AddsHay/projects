@@ -2,8 +2,11 @@ package byow.Core;
 
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
+
+import java.awt.*;
 import java.io.Serializable;
 import java.lang.Math;
+import java.util.ArrayList;
 import java.util.Random;
 import java.io.File;
 
@@ -15,6 +18,7 @@ public class RandomWorld implements Serializable {
     private Random RANDOM = new Random(SEED);
     public static final File CWD = new File(System.getProperty("user.dir"));
     public File savedstate = Utils.join(CWD, "savedstate");
+    public ArrayList<Integer> lights = new ArrayList();
 
     private static class Pos {
         int x;
@@ -516,6 +520,9 @@ public class RandomWorld implements Serializable {
         Pos avatarpos = p;
         for (int i = 0; i < commands.length(); i++) {
             switch (Character.toString(commands.charAt(i))) {
+                case "t":
+                    togglelight(tiles,new TETile('·', new Color(128, 192, 128),
+                            new Color(255, 255, 255), "light"));
                 case "W":
                     if (tiles[avatarpos.x][avatarpos.y + 1] != walltile) {
                         tiles[avatarpos.x][avatarpos.y] = floortile;
@@ -566,4 +573,61 @@ public class RandomWorld implements Serializable {
             }
         }
     }
+
+    public void placelight(TETile[][] tiles, TETile lighttile) {
+        Pos p = new Pos(RandomUtils.uniform(RANDOM, 3, WIDTH - 3), RandomUtils.uniform(RANDOM, 3, HEIGHT - 3));
+        if (tiles[p.x][p.y] != Tileset.FLOOR) {
+            placelight(tiles, lighttile);
+        } else {
+            tiles[p.x][p.y] = lighttile;
+            lights.add(((p.y - 1) * WIDTH) + p.x);
+        }
+    }
+
+    /** pass in that as lighttile
+     * TETile Light = new TETile('·', new Color(128, 192, 128), new Color(255, 255, 255),
+     *             "light)
+     * @param tiles
+     * @param lighttile
+     */
+    public void togglelight(TETile[][] tiles, TETile lighttile) {
+        int floorcount = 0;
+        for (int x = 0; x < WIDTH; x += 1) {
+            for (int y = 0; y < HEIGHT; y += 1) {
+                if (tiles[x][y] == Tileset.FLOOR) {
+                    floorcount += 1;
+                }
+            }
+        }
+        for (int x = 0; x < floorcount / 49; x++) {
+            placelight(tiles, lighttile);
+        }
+        for (Integer light : lights) {
+            int x = light % WIDTH;
+            int y = light / WIDTH + 1;
+            for (int xstart = x - 4; xstart < 10; xstart += 1) {
+                for (int ystart = y - 4; ystart < 10; ystart += 1) {
+                    if (tiles[x][y].backgroundColor == Color.BLACK) {
+                        if (tiles[xstart][ystart] == Tileset.FLOOR) {
+                            int dx = x - xstart;
+                            int dy = y - ystart;
+                            int c = (int) Math.round(102 * Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)));
+                            if (c < 255) {
+                                TETile.recolor(lighttile, -c, -c, 0);
+                                tiles[xstart][ystart] = lighttile;
+                            } else {
+                                TETile.recolor(lighttile, -255, -255, 255 - c);
+                                tiles[xstart][ystart] = lighttile;
+                            }
+                        }
+                    } else if (tiles[xstart][ystart] == Tileset.FLOOR) {
+                        lighttile.backgroundColor = Color.BLACK;
+                        tiles[xstart][ystart] = lighttile;
+                        tiles[x][y] = lighttile;
+                    }
+                }
+            }
+        }
+    }
+
 }

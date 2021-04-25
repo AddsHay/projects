@@ -24,7 +24,7 @@ import byow.Core.RandomUtils;
 public class TETile {
     private final char character; // Do not rename character or the autograder will break.
     private final Color textColor;
-    private final Color backgroundColor;
+    public Color backgroundColor;
     private final String description;
     private final String filepath;
 
@@ -129,6 +129,17 @@ public class TETile {
         int newRed = newColorValue(oldColor.getRed(), dr, r);
         int newGreen = newColorValue(oldColor.getGreen(), dg, r);
         int newBlue = newColorValue(oldColor.getBlue(), db, r);
+
+        Color c = new Color(newRed, newGreen, newBlue);
+
+        return new TETile(t, c);
+    }
+
+    public static TETile recolor(TETile t, int dr, int dg, int db) {
+        Color oldColor = t.textColor;
+        int newRed = oldColor.getRed() + dr;
+        int newGreen = oldColor.getGreen() + dg;
+        int newBlue = oldColor.getBlue()+ db;
 
         Color c = new Color(newRed, newGreen, newBlue);
 

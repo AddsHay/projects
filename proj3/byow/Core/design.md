@@ -30,4 +30,23 @@ Logic of Bloom:
    4. Run bloom(base) on the next item in Steps
 
 
+For lights:
+At center position (where the light is):
+use 255, 255, 255
+
+The First ring:
+use 153, 153, 255
+
+The Second Ring:
+use 51, 51, 255
+
+The Third Ring:
+use 0, 0, 204 
+
+The Fourth Ring:
+use 0, 0, 102
+
+Back to black;
+
+
 
