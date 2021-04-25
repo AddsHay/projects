@@ -252,12 +252,148 @@ public class RandomWorld implements Serializable {
                         }
                     }
                 }
-                if (verlim * step.dx > (leftlim + rightlim - 1) * step.dy) {
-
+                if (verlim < 4) {
+                    verlim = 0;
                 }
+                if (leftlim + rightlim < 5) {
+                    leftlim = 0;
+                    rightlim = 0;
+                }
+                if (verlim == 0 && leftlim == 0 && rightlim == 0) {
+                    step.structure = "o";
+                    step.direction = "o";
+                }
+                if (verlim * step.dx > (leftlim + rightlim - 1) * step.dy) {
+                    step.dy = verlim;
+                } else {
+                    step.p.x = step.pz.x - leftlim + 1;
+                    step.dx = leftlim + rightlim - 1;
+                }
+                break;
             case "down":
+                verlim = step.dy;
+                leftlim = step.pz.x - step.p.x + 1;
+                rightlim = step.p.x + step.dx - step.pz.x;
+                for (int i = step.p.x; i < step.p.x + step.dx; i += 1) {
+                    for (int j = 0; j < verlim; j += 1) {
+                        if (step.tile[i][step.p.y - j] == step.floor) {
+                            verlim = j;
+                        }
+                    }
+                }
+                for (int i = step.p.y; i < step.p.y + step.dy; i += 1) {
+                    for (int j = 0; j < leftlim; j += 1) {
+                        if (step.tile[i - j][j] == step.floor) {
+                            leftlim = j;
+                        }
+                    }
+                    for (int j = 0; j < rightlim; j += 1) {
+                        if (step.tile[i + j][j] == step.floor) {
+                            rightlim = j;
+                        }
+                    }
+                }
+                if (verlim < 4) {
+                    verlim = 0;
+                }
+                if (leftlim + rightlim < 5) {
+                    leftlim = 0;
+                    rightlim = 0;
+                }
+                if (verlim == 0 && leftlim == 0 && rightlim == 0) {
+                    step.structure = "o";
+                    step.direction = "o";
+                }
+                if (verlim * step.dx > (leftlim + rightlim - 1) * step.dy) {
+                    step.p.y = step.pz.y - verlim + 1;
+                    step.dy = verlim;
+                } else {
+                    step.p.x = step.pz.x - leftlim + 1;
+                    step.dx = leftlim + rightlim - 1;
+                }
+                break;
             case "left":
+                int horlim = step.dx;
+                int downlim = step.pz.y - step.p.y + 1;
+                int uplim = step.p.y + step.dy - step.pz.y;
+                for (int i = step.p.y; i < step.p.y + step.dy; i += 1) {
+                    for (int j = 0; j < horlim; j += 1) {
+                        if (step.tile[step.p.y - j][i] == step.floor) {
+                            horlim = j;
+                        }
+                    }
+                }
+                for (int i = step.p.x; i < step.p.x + step.dx; i += 1) {
+                    for (int j = 0; j < downlim; j += 1) {
+                        if (step.tile[i][i - j] == step.floor) {
+                            downlim = j;
+                        }
+                    }
+                    for (int j = 0; j < uplim; j += 1) {
+                        if (step.tile[j][i + j] == step.floor) {
+                            uplim = j;
+                        }
+                    }
+                }
+                if (horlim < 4) {
+                    horlim = 0;
+                }
+                if (downlim + uplim < 5) {
+                    downlim = 0;
+                    uplim = 0;
+                }
+                if (horlim == 0 && downlim == 0 && uplim == 0) {
+                    step.structure = "o";
+                    step.direction = "o";
+                }
+                if (horlim * step.dy > (downlim + uplim - 1) * step.dx) {
+                    step.p.x = step.pz.x - horlim + 1;
+                    step.dx = horlim;
+                } else {
+                    step.p.y = step.pz.y - downlim + 1;
+                    step.dy = downlim + uplim - 1;
+                }
+                break;
             case "right":
+                horlim = step.dx;
+                downlim = step.pz.y - step.p.y + 1;
+                uplim = step.p.y + step.dy - step.pz.y;
+                for (int i = step.p.y; i < step.p.y + step.dy; i += 1) {
+                    for (int j = 0; j < horlim; j += 1) {
+                        if (step.tile[step.p.y + j][i] == step.floor) {
+                            horlim = j;
+                        }
+                    }
+                }
+                for (int i = step.p.x; i < step.p.x + step.dx; i += 1) {
+                    for (int j = 0; j < downlim; j += 1) {
+                        if (step.tile[i][i - j] == step.floor) {
+                            downlim = j;
+                        }
+                    }
+                    for (int j = 0; j < uplim; j += 1) {
+                        if (step.tile[j][i + j] == step.floor) {
+                            uplim = j;
+                        }
+                    }
+                }
+                if (horlim < 4) {
+                    horlim = 0;
+                }
+                if (downlim + uplim < 5) {
+                    downlim = 0;
+                    uplim = 0;
+                }
+                if (horlim == 0 && downlim == 0 && uplim == 0) {
+                    step.structure = "o";
+                    step.direction = "o";
+                }
+                if (horlim * step.dy > (downlim + uplim - 1) * step.dx) {
+                    step.dx = horlim;
+                } else {
+                    step.p.y = step.pz.y - downlim + 1;
+                    step.dy = downlim + uplim - 1;
+                }
         }
     }
 
