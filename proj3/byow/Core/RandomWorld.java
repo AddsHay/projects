@@ -17,7 +17,7 @@ public class RandomWorld implements Serializable {
     public long SEED = 45927;
     private Random RANDOM = new Random(SEED);
     public static final File CWD = new File(System.getProperty("user.dir"));
-    public File savedstate = Utils.join(CWD, "savedstate");
+    public File savedstate = Utils.join(CWD, "savedstate.txt");
     public ArrayList<Integer> lights = new ArrayList();
 
     private static class Pos {
@@ -584,11 +584,9 @@ public class RandomWorld implements Serializable {
         }
     }
 
-    /** pass in that as lighttile
+    /** pass in  as lighttile:
      * TETile Light = new TETile('·', new Color(128, 192, 128), new Color(255, 255, 255),
      *             "light)
-     * @param tiles
-     * @param lighttile
      */
     public void togglelight(TETile[][] tiles, TETile lighttile) {
         int floorcount = 0;
