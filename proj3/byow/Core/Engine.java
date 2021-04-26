@@ -63,7 +63,6 @@ public class Engine {
             object.takeaction(finalWorldFrame, commands, Tileset.WALL,
                     Tileset.FLOOR, Tileset.AVATAR);
         }
-        ter.renderFrame(finalWorldFrame);
         return finalWorldFrame;
     }
 }
