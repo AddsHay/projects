@@ -654,7 +654,6 @@ public class RandomWorld implements Serializable {
                 }
             }
         }
-        if (floors.size() == 0) { return; }
         int com = floors.get(RandomUtils.uniform(RANDOM, floors.size()));
         int x = com % WIDTH;
         int y = com / WIDTH + 1;
