@@ -654,6 +654,9 @@ public class RandomWorld implements Serializable {
                 }
             }
         }
+        if (floors.size() == 0) {
+
+        }
         int com = floors.get(RandomUtils.uniform(RANDOM, floors.size()));
         int x = com % WIDTH;
         int y = com / WIDTH + 1;
@@ -662,10 +665,7 @@ public class RandomWorld implements Serializable {
     }
 
     public TETile[][] takeaction(TETile[][] tiles, String commands, TETile walltile, TETile floortile, TETile avatartile) {
-        if (!Character.toString(commands.charAt(0)).equals("L")
-                && !Character.toString(commands.charAt(0)).equals("l")) {
-            placeavatar(tiles, Tileset.AVATAR);
-        }
+        placeavatar(tiles, Tileset.AVATAR);
         for (int i = 0; i < commands.length(); i++) {
             if (Character.toString(commands.charAt(i)).equals("t")) {
                 togglelight(tiles, new TETile('·', new Color(128, 192, 128),
