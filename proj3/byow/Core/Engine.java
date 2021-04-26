@@ -43,18 +43,20 @@ public class Engine {
         TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
         String inputseed = null;
         String commands = null;
+        String seed = null;
         if (Character.toString(input.charAt(0)).equals("n")
                 || Character.toString(input.charAt(0)).equals("N")) {
             inputseed = input.substring(1);
             for (int i = 0; i < inputseed.length(); i++) {
                 if (Character.isLetter(inputseed.charAt(i))) {
                     commands = inputseed.substring(i + 1);
-                    inputseed = inputseed.substring(0, i);
+                    seed = inputseed.substring(0, i);
+                    i = inputseed.length();
                     break;
                 }
             }
             object.drawbuild(finalWorldFrame, Tileset.WALL,
-                    Tileset.FLOOR, Long.parseLong(inputseed));
+                    Tileset.FLOOR, Long.parseLong(seed));
             object.takeaction(finalWorldFrame, commands, Tileset.WALL,
                     Tileset.FLOOR, Tileset.AVATAR);
         }
