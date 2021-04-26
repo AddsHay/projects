@@ -326,14 +326,14 @@ public class RandomWorld implements Serializable {
                         }
                     }
                 }
-                for (int i = step.p.x; i < step.p.x + step.dx; i += 1) {
+                for (int i = step.p.x; i > step.p.x - step.dx; i -= 1) {
                     for (int j = 0; j < downlim; j += 1) {
-                        if (step.tile[i][i - j] == step.floor) {
+                        if (step.tile[i][step.pz.y - j] == step.floor) {
                             downlim = j;
                         }
                     }
                     for (int j = 0; j < uplim; j += 1) {
-                        if (step.tile[j][i + j] == step.floor) {
+                        if (step.tile[i][step.pz.y + j] == step.floor) {
                             uplim = j;
                         }
                     }
@@ -370,12 +370,12 @@ public class RandomWorld implements Serializable {
                 }
                 for (int i = step.p.x; i < step.p.x + step.dx; i += 1) {
                     for (int j = 0; j < downlim; j += 1) {
-                        if (step.tile[i][i - j] == step.floor) {
+                        if (step.tile[i][step.pz.y - j] == step.floor) {
                             downlim = j;
                         }
                     }
                     for (int j = 0; j < uplim; j += 1) {
-                        if (step.tile[j][i + j] == step.floor) {
+                        if (step.tile[i][step.pz.y + j] == step.floor) {
                             uplim = j;
                         }
                     }
