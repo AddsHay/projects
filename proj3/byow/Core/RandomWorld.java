@@ -646,68 +646,104 @@ public class RandomWorld implements Serializable {
         }
     }
 
-    public void takeaction(TETile[][] tiles, String commands, TETile walltile, TETile floortile, TETile avatartile) {
-        Pos p = new Pos(RandomUtils.uniform(RANDOM, 3, WIDTH - 3), RandomUtils.uniform(RANDOM, 3, HEIGHT - 3));
-        if (tiles[p.x][p.y] != Tileset.FLOOR) {
-            placeavatar(tiles, avatartile);
-        } else {
-            tiles[p.x][p.y] = avatartile;
-        }
-        Pos avatarpos = p;
+    public TETile[][] takeaction(TETile[][] tiles, String commands, TETile walltile, TETile floortile, TETile avatartile) {
+        Pos avatarpos = new Pos(0, 0);
         for (int i = 0; i < commands.length(); i++) {
-            switch (Character.toString(commands.charAt(i))) {
-                case "t":
-                    togglelight(tiles,new TETile('·', new Color(128, 192, 128),
-                            new Color(255, 255, 255), "light"));
-                case "W":
-                    if (tiles[avatarpos.x][avatarpos.y + 1] != walltile) {
-                        tiles[avatarpos.x][avatarpos.y] = floortile;
-                        avatarpos.y += 1;
-                        tiles[avatarpos.x][avatarpos.y] = avatartile;
+            if (!Character.toString(commands.charAt(i)).equals("L")
+                    && !Character.toString(commands.charAt(i)).equals("l")) {
+                Pos p = new Pos(RandomUtils.uniform(RANDOM, 3, WIDTH - 3), RandomUtils.uniform(RANDOM, 3, HEIGHT - 3));
+                if (tiles[p.x][p.y] != Tileset.FLOOR) {
+                    placeavatar(tiles, avatartile);
+                } else {
+                    tiles[p.x][p.y] = avatartile;
+                }
+                avatarpos = p;
+            }
+            if (Character.toString(commands.charAt(i)).equals("t")) {
+                togglelight(tiles, new TETile('·', new Color(128, 192, 128),
+                        new Color(255, 255, 255), "light"));
+            }
+            if (Character.toString(commands.charAt(i)).equals("W")) {
+                if (tiles[avatarpos.x][avatarpos.y + 1] != walltile) {
+                    tiles[avatarpos.x][avatarpos.y] = floortile;
+                    avatarpos.y += 1;
+                    tiles[avatarpos.x][avatarpos.y] = avatartile;
+                }
+            }
+            if (Character.toString(commands.charAt(i)).equals("A")) {
+                if (tiles[avatarpos.x - 1][avatarpos.y] != walltile) {
+                    tiles[avatarpos.x][avatarpos.y] = floortile;
+                    avatarpos.x += -1;
+                    tiles[avatarpos.x][avatarpos.y] = avatartile;
+                }
+            }
+            if (Character.toString(commands.charAt(i)).equals("S")) {
+                if (tiles[avatarpos.x][avatarpos.y - 1] != walltile) {
+                    tiles[avatarpos.x][avatarpos.y] = floortile;
+                    avatarpos.y -= 1;
+                    tiles[avatarpos.x][avatarpos.y] = avatartile;
+                }
+            }
+            if (Character.toString(commands.charAt(i)).equals("D")) {
+                if (tiles[avatarpos.x + 1][avatarpos.y] != walltile) {
+                    tiles[avatarpos.x][avatarpos.y] = floortile;
+                    avatarpos.x += 1;
+                    tiles[avatarpos.x][avatarpos.y] = avatartile;
+                }
+            }
+            if (Character.toString(commands.charAt(i)).equals(":")) {
+                if (Character.toString(commands.charAt(i + 1)).equals("Q")
+                        || Character.toString(commands.charAt(i + 1)).equals("q")) {
+                    File savedstate = new File("savedstate.txt");
+                    String inputseed = "n" + SEED + "s" + commands.substring(0, commands.length() - 2);
+                    Utils.writeContents(savedstate, inputseed);
+                    return tiles;
+                }
+            }
+            if (Character.toString(commands.charAt(i)).equals("L")) {
+                String cmds = commands.substring(1);
+                String inputstring = Utils.readContentsAsString(savedstate);
+                String inputseed = inputstring;
+                String oldcmd = inputstring;
+                if (Character.toString(inputstring.charAt(0)).equals("N")
+                        || Character.toString(inputstring.charAt(0)).equals("n")) {
+                    inputseed = inputstring.substring(1);
+                }
+                for (int x = 0; x < inputseed.length(); x++) {
+                    if (Character.isLetter(inputseed.charAt(x))) {
+                        oldcmd = inputseed.substring(x + 1);
+                        inputseed = inputseed.substring(0, x);
+                        break;
                     }
-                case "A":
-                    if (tiles[avatarpos.x - 1][avatarpos.y] != walltile) {
-                        tiles[avatarpos.x][avatarpos.y] = floortile;
-                        avatarpos.x += -1;
-                        tiles[avatarpos.x][avatarpos.y] = avatartile;
+                }
+                String combined = oldcmd + cmds;
+                drawbuild(tiles, Tileset.WALL, Tileset.FLOOR, Long.parseLong(inputseed));
+                takeaction(tiles, combined, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
+                if (Character.toString(commands.charAt(i)).equals("l")) {
+                    String cmd = commands.substring(1);
+                    String inputstringg = Utils.readContentsAsString(savedstate);
+                    String inputseedd = inputstringg;
+                    String oldcmds = inputstringg;
+                    if (Character.toString(inputstringg.charAt(0)).equals("N")
+                            || Character.toString(inputstringg.charAt(0)).equals("n")) {
+                        inputseedd = inputstringg.substring(1);
                     }
-                case "S":
-                    if (tiles[avatarpos.x][avatarpos.y - 1] != walltile) {
-                        tiles[avatarpos.x][avatarpos.y] = floortile;
-                        avatarpos.y -= 1;
-                        tiles[avatarpos.x][avatarpos.y] = avatartile;
-                    }
-                case "D":
-                    if (tiles[avatarpos.x + 1][avatarpos.y] != walltile) {
-                        tiles[avatarpos.x][avatarpos.y] = floortile;
-                        avatarpos.x += 1;
-                        tiles[avatarpos.x][avatarpos.y] = avatartile;
-                    }
-                case ":":
-                    if (Character.toString(commands.charAt(i + 1)).equals("Q")
-                            || Character.toString(commands.charAt(i + 1)).equals("q")) {
-                        File savedstate = Utils.join(CWD, "savedstate.txt");
-                        String inputseed = "n" + SEED + "s" + commands.substring(0, commands.length() - 2);
-                        Utils.writeContents(savedstate, inputseed);
-                        System.exit(0);
-                    }
-                case "L":
-                    if (savedstate.isFile()) {
-                        String inputstring = Utils.readContentsAsString(savedstate);
-                        String inputseed = inputstring.substring(1);
-                        for (int x = 0; x < inputseed.length(); x++) {
-                            if (Character.isLetter(inputseed.charAt(x))) {
-                                commands = inputseed.substring(x + 1);
-                                inputseed = inputseed.substring(0, x);
-                                break;
-                            }
+                    for (int x = 0; x < inputseedd.length(); x++) {
+                        if (Character.isLetter(inputseedd.charAt(x))) {
+                            oldcmds = inputseedd.substring(x + 1);
+                            inputseedd = inputseedd.substring(0, x);
+                            break;
                         }
-                        drawbuild(tiles, Tileset.WALL, Tileset.FLOOR, Long.parseLong(inputseed));
-                        takeaction(tiles, commands, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
                     }
-                default:
+                    String ccombined = oldcmds + cmd;
+                    drawbuild(tiles, Tileset.WALL, Tileset.FLOOR, Long.parseLong(inputseedd));
+                    takeaction(tiles, ccombined, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
+                } else {
+                    continue;
+                }
             }
         }
+        return tiles;
     }
 
     public void placelight(TETile[][] tiles, TETile lighttile) {
