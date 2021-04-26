@@ -110,7 +110,8 @@ public class RandomWorld implements Serializable {
     }
 
     public void drawbuild(TETile[][] tiles, TETile walltile, TETile floortile, Long inputseed) {
-        RANDOM = new Random(inputseed);
+        SEED = inputseed;
+        RANDOM = new Random(SEED);
         fillWithNothing(tiles);
         Pos p = new Pos(RandomUtils.uniform(RANDOM, 10, WIDTH - 10), RandomUtils.uniform(RANDOM, 10, HEIGHT - 10));
         Pos pz = new Pos(p.x + 1, p.y + 1);
@@ -700,7 +701,8 @@ public class RandomWorld implements Serializable {
                     return tiles;
                 }
             }
-            if (Character.toString(commands.charAt(i)).equals("L")) {
+            if (Character.toString(commands.charAt(i)).equals("L")
+                    || Character.toString(commands.charAt(i)).equals("l")) {
                 String cmds = commands.substring(1);
                 String inputstring = Utils.readContentsAsString(savedstate);
                 String inputseed = inputstring;
@@ -719,32 +721,12 @@ public class RandomWorld implements Serializable {
                 String combined = oldcmd + cmds;
                 drawbuild(tiles, Tileset.WALL, Tileset.FLOOR, Long.parseLong(inputseed));
                 takeaction(tiles, combined, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
-                if (Character.toString(commands.charAt(i)).equals("l")) {
-                    String cmd = commands.substring(1);
-                    String inputstringg = Utils.readContentsAsString(savedstate);
-                    String inputseedd = inputstringg;
-                    String oldcmds = inputstringg;
-                    if (Character.toString(inputstringg.charAt(0)).equals("N")
-                            || Character.toString(inputstringg.charAt(0)).equals("n")) {
-                        inputseedd = inputstringg.substring(1);
-                    }
-                    for (int x = 0; x < inputseedd.length(); x++) {
-                        if (Character.isLetter(inputseedd.charAt(x))) {
-                            oldcmds = inputseedd.substring(x + 1);
-                            inputseedd = inputseedd.substring(0, x);
-                            break;
-                        }
-                    }
-                    String ccombined = oldcmds + cmd;
-                    drawbuild(tiles, Tileset.WALL, Tileset.FLOOR, Long.parseLong(inputseedd));
-                    takeaction(tiles, ccombined, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
                 } else {
                     continue;
                 }
             }
-        }
         return tiles;
-    }
+        }
 
     public void placelight(TETile[][] tiles, TETile lighttile) {
         Pos p = new Pos(RandomUtils.uniform(RANDOM, 3, WIDTH - 3), RandomUtils.uniform(RANDOM, 3, HEIGHT - 3));
@@ -777,7 +759,7 @@ public class RandomWorld implements Serializable {
             int y = light / WIDTH + 1;
             for (int xstart = x - 4; xstart < 10; xstart += 1) {
                 for (int ystart = y - 4; ystart < 10; ystart += 1) {
-                    if (tiles[x][y].backgroundColor == Color.BLACK) {
+                    if (tiles[x][y].isBlack()) {
                         if (tiles[xstart][ystart] == Tileset.FLOOR) {
                             int dx = x - xstart;
                             int dy = y - ystart;
@@ -791,7 +773,7 @@ public class RandomWorld implements Serializable {
                             }
                         }
                     } else if (tiles[xstart][ystart] == Tileset.FLOOR) {
-                        lighttile.backgroundColor = Color.BLACK;
+                        TETile.recolor(lighttile, 0, 0, 0);
                         tiles[xstart][ystart] = lighttile;
                         tiles[x][y] = lighttile;
                     }

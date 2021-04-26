@@ -24,7 +24,7 @@ import byow.Core.RandomUtils;
 public class TETile {
     private final char character; // Do not rename character or the autograder will break.
     private final Color textColor;
-    public Color backgroundColor;
+    private Color backgroundColor;
     private final String description;
     private final String filepath;
 
@@ -112,6 +112,10 @@ public class TETile {
      */
     public String description() {
         return description;
+    }
+
+    public boolean isBlack() {
+        return (this.backgroundColor == Color.BLACK);
     }
 
     /**
