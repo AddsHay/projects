@@ -204,7 +204,9 @@ public class RandomWorld implements Serializable {
 
     private void fixroom(Steps step) {
         fixroomborder(step);
-        fixroomcollide(step);
+        if (!step.structure.equals("o") && !step.direction.equals("o")) {
+            fixroomcollide(step);
+        }
     }
 
     private void fixroomborder(Steps step) {
