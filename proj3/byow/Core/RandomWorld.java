@@ -224,7 +224,7 @@ public class RandomWorld implements Serializable {
         if (step.p.y + step.dy > HEIGHT - 3) {
             step.dy = HEIGHT - 3 - step.p.y;
         }
-        if (step.dx < 3 || step.dy < 3) {
+        if (step.dx < 4 || step.dy < 4) {
             step.structure = "o";
             step.direction = "o";
         }
