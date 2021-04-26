@@ -727,7 +727,6 @@ public class RandomWorld implements Serializable {
                 String combined = oldcmd + cmds;
                 drawbuild(tiles, Tileset.WALL, Tileset.FLOOR, Long.parseLong(inputseed));
                 takeaction(tiles, oldcmd, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
-                takeaction(tiles, cmds, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
                 } else {
                     continue;
                 }
