@@ -654,9 +654,7 @@ public class RandomWorld implements Serializable {
                 }
             }
         }
-        if (floors.size() == 0) {
-
-        }
+        if (floors.size() == 0) { return; }
         int com = floors.get(RandomUtils.uniform(RANDOM, floors.size()));
         int x = com % WIDTH;
         int y = com / WIDTH + 1;
@@ -777,11 +775,10 @@ public class RandomWorld implements Serializable {
                             int c = (int) Math.round(102 * Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)));
                             if (c < 255) {
                                 TETile.recolor(lighttile, -c, -c, 0);
-                                tiles[xstart][ystart] = lighttile;
                             } else {
                                 TETile.recolor(lighttile, -255, -255, 255 - c);
-                                tiles[xstart][ystart] = lighttile;
                             }
+                            tiles[xstart][ystart] = lighttile;
                         }
                     } else if (tiles[xstart][ystart] == Tileset.FLOOR) {
                         TETile.recolor(lighttile, 0, 0, 0);
