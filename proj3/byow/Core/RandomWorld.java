@@ -12,17 +12,17 @@ import java.io.File;
 
 
 public class RandomWorld implements Serializable {
-    private static final int WIDTH = 50;
-    private static final int HEIGHT = 50;
+    private final int WIDTH = 50;
+    private final int HEIGHT = 50;
     public long SEED = 45927;
     private Random RANDOM = new Random(SEED);
-    public static final File CWD = new File(System.getProperty("user.dir"));
+    public final File CWD = new File(System.getProperty("user.dir"));
     public File savedstate = Utils.join(CWD, "savedstate.txt");
     public ArrayList<Integer> lights = new ArrayList();
     public ArrayList<Integer> floors = new ArrayList();
     public Pos avatarpos = new Pos(0,0);
 
-    private static class Pos {
+    private class Pos {
         int x;
         int y;
 
@@ -506,7 +506,7 @@ public class RandomWorld implements Serializable {
     }
 
     /** Storage unit for the upcoming steps */
-    private static class Steps {
+    private class Steps {
         private Steps next;
         private Steps last;
         private final TETile[][] tile;

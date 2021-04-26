@@ -7,8 +7,8 @@ import byow.TileEngine.Tileset;
 public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
-    public static final int WIDTH = 50;
-    public static final int HEIGHT = 50;
+    public final int WIDTH = 50;
+    public final int HEIGHT = 50;
     RandomWorld object = new RandomWorld();
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
