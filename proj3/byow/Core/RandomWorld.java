@@ -709,7 +709,6 @@ public class RandomWorld implements Serializable {
             }
             if (Character.toString(commands.charAt(i)).equals("L")
                     || Character.toString(commands.charAt(i)).equals("l")) {
-                String cmds = commands.substring(1);
                 String inputstring = Utils.readContentsAsString(savedstate);
                 String inputseed = inputstring;
                 String oldcmd = inputstring;
@@ -724,7 +723,6 @@ public class RandomWorld implements Serializable {
                         break;
                     }
                 }
-                String combined = oldcmd + cmds;
                 drawbuild(tiles, Tileset.WALL, Tileset.FLOOR, Long.parseLong(inputseed));
                 takeaction(tiles, oldcmd, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
                 } else {
