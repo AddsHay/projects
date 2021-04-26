@@ -19,6 +19,8 @@ public class RandomWorld implements Serializable {
     public static final File CWD = new File(System.getProperty("user.dir"));
     public File savedstate = Utils.join(CWD, "savedstate.txt");
     public ArrayList<Integer> lights = new ArrayList();
+    public ArrayList<Integer> floors = new ArrayList();
+    public Pos avatarpos = new Pos(0,0);
 
     private static class Pos {
         int x;
@@ -645,25 +647,24 @@ public class RandomWorld implements Serializable {
     }
 
     public void placeavatar(TETile[][] tiles, TETile avatartile) {
-        Pos p = new Pos(RandomUtils.uniform(RANDOM, 3, WIDTH - 3), RandomUtils.uniform(RANDOM, 3, HEIGHT - 3));
-        if (tiles[p.x][p.y] != Tileset.FLOOR) {
-            placeavatar(tiles, avatartile);
-        } else {
-            tiles[p.x][p.y] = avatartile;
+        for (int x = 0; x < WIDTH; x += 1) {
+            for (int y = 0; y < HEIGHT; y += 1) {
+                if (tiles[x][y] == Tileset.FLOOR) {
+                    floors.add(((y - 1) * WIDTH) + x);
+                }
+            }
         }
+        int com = floors.get(RandomUtils.uniform(RANDOM, floors.size()));
+        int x = com % WIDTH;
+        int y = com / WIDTH + 1;
+        tiles[x][y] = avatartile;
+        Pos avatarpos = new Pos(x, y);
     }
 
     public TETile[][] takeaction(TETile[][] tiles, String commands, TETile walltile, TETile floortile, TETile avatartile) {
-        Pos avatarpos = new Pos(0,0);
         if (!Character.toString(commands.charAt(0)).equals("L")
                 && !Character.toString(commands.charAt(0)).equals("l")) {
-            Pos p = new Pos(RandomUtils.uniform(RANDOM, 3, WIDTH - 3), RandomUtils.uniform(RANDOM, 3, HEIGHT - 3));
-            if (tiles[p.x][p.y] != Tileset.FLOOR) {
-                placeavatar(tiles, avatartile);
-            } else {
-                tiles[p.x][p.y] = avatartile;
-            }
-            avatarpos = p;
+            placeavatar(tiles, Tileset.AVATAR);
         }
         for (int i = 0; i < commands.length(); i++) {
             if (Character.toString(commands.charAt(i)).equals("t")) {
