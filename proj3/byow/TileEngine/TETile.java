@@ -143,7 +143,7 @@ public class TETile {
         Color oldColor = t.textColor;
         int newRed = oldColor.getRed() + dr;
         int newGreen = oldColor.getGreen() + dg;
-        int newBlue = oldColor.getBlue()+ db;
+        int newBlue = oldColor.getBlue() + db;
 
         Color c = new Color(newRed, newGreen, newBlue);
 

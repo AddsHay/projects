@@ -701,7 +701,8 @@ public class RandomWorld implements Serializable {
                     return tiles;
                 }
             }
-            if (Character.toString(commands.charAt(i)).equals("L")) {
+            if (Character.toString(commands.charAt(i)).equals("L")
+                    || Character.toString(commands.charAt(i)).equals("l")) {
                 String cmds = commands.substring(1);
                 String inputstring = Utils.readContentsAsString(savedstate);
                 String inputseed = inputstring;

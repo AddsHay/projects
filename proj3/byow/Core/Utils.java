@@ -1,13 +1,11 @@
 package byow.Core;
 
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -153,9 +151,6 @@ class Utils {
     }
 
     /** Write OBJ to FILE. */
-    static void writeObject(File file, Serializable obj) {
-        writeContents(file, serialize(obj));
-    }
 
     /* DIRECTORIES */
 
@@ -204,17 +199,7 @@ class Utils {
     /* SERIALIZATION UTILITIES */
 
     /** Returns a byte array containing the serialized contents of OBJ. */
-    static byte[] serialize(Serializable obj) {
-        try {
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            ObjectOutputStream objectStream = new ObjectOutputStream(stream);
-            objectStream.writeObject(obj);
-            objectStream.close();
-            return stream.toByteArray();
-        } catch (IOException excp) {
-            throw error("Internal error serializing commit.");
-        }
-    }
+
 
 
 
@@ -222,10 +207,6 @@ class Utils {
 
     /** Return a GitletException whose message is composed from MSG and ARGS as
      *  for the String.format method. */
-    static GitletException error(String msg, Object... args) {
-        return new GitletException(String.format(msg, args));
-    }
-
     /** Print a message composed from MSG and ARGS as for the String.format
      *  method, followed by a newline. */
     static void message(String msg, Object... args) {
@@ -234,13 +215,5 @@ class Utils {
     }
 }
 
-class GitletException extends RuntimeException {
-    GitletException() {
-    }
-
-    GitletException(String msg) {
-        super(msg);
-    }
-}
 
 
