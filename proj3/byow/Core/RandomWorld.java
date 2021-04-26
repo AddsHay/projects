@@ -658,7 +658,7 @@ public class RandomWorld implements Serializable {
         int x = com % WIDTH;
         int y = com / WIDTH + 1;
         tiles[x][y] = avatartile;
-        Pos avatarpos = new Pos(x, y);
+        avatarpos = new Pos(x, y);
     }
 
     public TETile[][] takeaction(TETile[][] tiles, String commands, TETile walltile, TETile floortile, TETile avatartile) {
