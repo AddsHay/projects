@@ -403,7 +403,6 @@ public class RandomWorld implements Serializable {
                 }
         }
     }
-    */
 
     private void fixhall(Steps step) {
         if (step.direction.equals("up")) {
