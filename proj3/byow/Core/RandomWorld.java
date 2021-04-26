@@ -211,12 +211,12 @@ public class RandomWorld implements Serializable {
 
     private void fixroomborder(Steps step) {
         if (step.p.x < 3) {
+            step.dx += step.p.x - 3;
             step.p.x = 3;
-            step.dx -= 3;
         }
         if (step.p.y < 3) {
+            step.dy += step.p.y - 3;
             step.p.y = 3;
-            step.dy -= 3;
         }
         if (step.p.x + step.dx > WIDTH - 3) {
             step.dx = WIDTH - 3 - step.p.x;
