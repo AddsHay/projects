@@ -53,15 +53,14 @@ public class Engine {
                     break;
                 }
             }
-        }
-        if (Character.toString(input.charAt(0)).equals("L")
-                || Character.toString(input.charAt(0)).equals("l")) {
-            object.takeaction(finalWorldFrame, input, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
-        } else {
             object.drawbuild(finalWorldFrame, Tileset.WALL,
                     Tileset.FLOOR, Long.parseLong(inputseed));
             object.takeaction(finalWorldFrame, commands, Tileset.WALL,
                     Tileset.FLOOR, Tileset.AVATAR);
+        }
+        if (Character.toString(input.charAt(0)).equals("L")
+                || Character.toString(input.charAt(0)).equals("l")) {
+            object.takeaction(finalWorldFrame, input, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
         }
         return finalWorldFrame;
     }

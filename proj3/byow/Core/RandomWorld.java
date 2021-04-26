@@ -665,7 +665,10 @@ public class RandomWorld implements Serializable {
     }
 
     public TETile[][] takeaction(TETile[][] tiles, String commands, TETile walltile, TETile floortile, TETile avatartile) {
-        placeavatar(tiles, Tileset.AVATAR);
+        if (!Character.toString(commands.charAt(0)).equals("L")
+                && !Character.toString(commands.charAt(0)).equals("l")) {
+            placeavatar(tiles, Tileset.AVATAR);
+        }
         for (int i = 0; i < commands.length(); i++) {
             if (Character.toString(commands.charAt(i)).equals("t")) {
                 togglelight(tiles, new TETile('·', new Color(128, 192, 128),
