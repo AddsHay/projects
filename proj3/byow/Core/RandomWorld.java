@@ -656,8 +656,8 @@ public class RandomWorld implements Serializable {
     public TETile[][] takeaction(TETile[][] tiles, String commands, TETile walltile, TETile floortile, TETile avatartile) {
         Pos avatarpos = new Pos(0, 0);
         for (int i = 0; i < commands.length(); i++) {
-            if (!Character.toString(commands.charAt(0)).equals("L")
-                    && !Character.toString(commands.charAt(0)).equals("l")) {
+            if (!Character.toString(commands.charAt(i)).equals("L")
+                    && !Character.toString(commands.charAt(i)).equals("l")) {
                 Pos p = new Pos(RandomUtils.uniform(RANDOM, 3, WIDTH - 3), RandomUtils.uniform(RANDOM, 3, HEIGHT - 3));
                 if (tiles[p.x][p.y] != Tileset.FLOOR) {
                     placeavatar(tiles, avatartile);
