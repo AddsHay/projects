@@ -17,6 +17,7 @@ public class Engine {
      * including inputs from the main menu.
      */
     public void interactWithKeyboard() {
+        /**
         boolean exit = false;
         while (!exit) {
             if (StdDraw.hasNextKeyTyped()) {
@@ -27,6 +28,7 @@ public class Engine {
                 //set of whatever you do in the menu
             }
         }
+         */
     }
     /**
      * Method used for autograding and testing your code. The input string will be a series
@@ -51,6 +53,7 @@ public class Engine {
      * take off the na nd the s and then parse long of the remainder
      */
     public TETile[][] interactWithInputString(String input) {
+        ter.initialize(WIDTH, HEIGHT);
         TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
         String inputseed = null;
         String commands = null;
@@ -75,6 +78,7 @@ public class Engine {
                 || Character.toString(input.charAt(0)).equals("l")) {
             object.takeaction(finalWorldFrame, input, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
         }
+        ter.renderFrame(finalWorldFrame);
         return finalWorldFrame;
     }
 }

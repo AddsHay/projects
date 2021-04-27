@@ -211,10 +211,9 @@ public class RandomWorld implements Serializable {
 
     private void fixroom(Steps step) {
         fixroomborder(step);
-        /**
         if (!step.structure.equals("o") && !step.direction.equals("o")) {
             fixroomcollide(step);
-        }*/
+        }
     }
 
 
@@ -254,12 +253,12 @@ public class RandomWorld implements Serializable {
                 }
                 for (int i = step.p.y; i < step.p.y + step.dy; i += 1) {
                     for (int j = 0; j < leftlim; j += 1) {
-                        if (step.tile[i - j][j] == step.floor) {
+                        if (step.tile[step.pz.x - j][i] == step.floor) {
                             leftlim = j;
                         }
                     }
                     for (int j = 0; j < rightlim; j += 1) {
-                        if (step.tile[i + j][j] == step.floor) {
+                        if (step.tile[step.pz.y + j][i] == step.floor) {
                             rightlim = j;
                         }
                     }
@@ -295,12 +294,12 @@ public class RandomWorld implements Serializable {
                 }
                 for (int i = step.p.y; i < step.p.y + step.dy; i += 1) {
                     for (int j = 0; j < leftlim; j += 1) {
-                        if (step.tile[i - j][j] == step.floor) {
+                        if (step.tile[step.pz.x - j][i] == step.floor) {
                             leftlim = j;
                         }
                     }
                     for (int j = 0; j < rightlim; j += 1) {
-                        if (step.tile[i + j][j] == step.floor) {
+                        if (step.tile[step.pz.x + j][i] == step.floor) {
                             rightlim = j;
                         }
                     }
@@ -330,12 +329,12 @@ public class RandomWorld implements Serializable {
                 int uplim = step.p.y + step.dy - step.pz.y;
                 for (int i = step.p.y; i < step.p.y + step.dy; i += 1) {
                     for (int j = 0; j < horlim; j += 1) {
-                        if (step.tile[step.p.y - j][i] == step.floor) {
+                        if (step.tile[step.pz.x - j][i] == step.floor) {
                             horlim = j;
                         }
                     }
                 }
-                for (int i = step.p.x; i > step.p.x - step.dx; i -= 1) {
+                for (int i = step.pz.x; i > step.pz.x - step.dx; i -= 1) {
                     for (int j = 0; j < downlim; j += 1) {
                         if (step.tile[i][step.pz.y - j] == step.floor) {
                             downlim = j;
@@ -372,7 +371,7 @@ public class RandomWorld implements Serializable {
                 uplim = step.p.y + step.dy - step.pz.y;
                 for (int i = step.p.y; i < step.p.y + step.dy; i += 1) {
                     for (int j = 0; j < horlim; j += 1) {
-                        if (step.tile[step.p.y + j][i] == step.floor) {
+                        if (step.tile[step.pz.x + j][i] == step.floor) {
                             horlim = j;
                         }
                     }
