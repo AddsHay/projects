@@ -146,36 +146,40 @@ public class RandomWorld implements Serializable {
         fix(base);
         // Make the given structure
         // (Note that this makes P the bottom-left corner)
-        switch (base.structure) {
-            case "room":
-                createroom(base.tile, base.wall, base.floor, base.p, base.dx, base.dy);
-                base.tile[base.pz.x][base.pz.y] = Tileset.FLOOR;
-                break;
-            case "hall":
-                switch (base.direction) {
-                    case "up":
-                        createhallvert(base.tile, base.wall, base.floor, base.p, base.dy);
-                        drawrow(base.tile, base.p.x - 1, base.p.y + base.dy, base.wall, 3);
-                        break;
-                    case "down":
-                        createhallvert(base.tile, base.wall, base.floor, base.p, -base.dy);
-                        drawrow(base.tile, base.p.x - 1, base.p.y - base.dy, base.wall, 3);
-                        break;
-                    case "left":
-                        createhallhor(base.tile, base.wall, base.floor, base.p, -base.dx);
-                        drawcolumn(base.tile, base.p.x - base.dx, base.p.y - 1, base.wall, 3);
-                        break;
-                    case "right":
-                        createhallhor(base.tile, base.wall, base.floor, base.p, base.dx);
-                        drawcolumn(base.tile, base.p.x + base.dx, base.p.y - 1, base.wall, 3);
-                        break;
-                    default:
-                        break;
-                }
-                break;
-            default:
-                base.zero = 1;
-                break;
+        if (!base.structure.equals("o") && !base.direction.equals("o")) {
+            switch (base.structure) {
+                case "room":
+                    createroom(base.tile, base.wall, base.floor, base.p, base.dx, base.dy);
+                    base.tile[base.pz.x][base.pz.y] = Tileset.FLOOR;
+                    break;
+                case "hall":
+                    switch (base.direction) {
+                        case "up":
+                            createhallvert(base.tile, base.wall, base.floor, base.p, base.dy);
+                            drawrow(base.tile, base.p.x - 1, base.p.y + base.dy, base.wall, 3);
+                            break;
+                        case "down":
+                            createhallvert(base.tile, base.wall, base.floor, base.p, -base.dy);
+                            drawrow(base.tile, base.p.x - 1, base.p.y - base.dy, base.wall, 3);
+                            break;
+                        case "left":
+                            createhallhor(base.tile, base.wall, base.floor, base.p, -base.dx);
+                            drawcolumn(base.tile, base.p.x - base.dx, base.p.y - 1, base.wall, 3);
+                            break;
+                        case "right":
+                            createhallhor(base.tile, base.wall, base.floor, base.p, base.dx);
+                            drawcolumn(base.tile, base.p.x + base.dx, base.p.y - 1, base.wall, 3);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                default:
+                    base.zero = 1;
+                    break;
+            }
+        } else {
+            base.zero = 1;
         }
         // Add new Steps
         if (RandomUtils.uniform(RANDOM) > base.zero) {
@@ -207,11 +211,9 @@ public class RandomWorld implements Serializable {
 
     private void fixroom(Steps step) {
         fixroomborder(step);
-        /**
         if (!step.structure.equals("o") && !step.direction.equals("o")) {
             fixroomcollide(step);
         }
-        */
     }
 
 
