@@ -19,7 +19,7 @@ public class Engine {
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
      * including inputs from the main menu.
-     
+
     public void interactWithKeyboard() {
         reset();
         createmenu();
@@ -125,7 +125,6 @@ public class Engine {
      * take off the na nd the s and then parse long of the remainder
      */
     public TETile[][] interactWithInputString(String input) {
-        ter.initialize(WIDTH, HEIGHT);
         TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
         String inputseed = null;
         String commands = null;
@@ -148,7 +147,6 @@ public class Engine {
         } else {
             object.takeaction(finalWorldFrame, input, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
         }
-        ter.renderFrame(finalWorldFrame);
         return finalWorldFrame;
     }
 }
