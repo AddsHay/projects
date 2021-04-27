@@ -21,7 +21,10 @@ public class Engine {
         while (!exit) {
             if (StdDraw.hasNextKeyTyped()) {
                 char c = Character.toUpperCase(StdDraw.nextKeyTyped());
+                // If in game mode,
                 //object.takeaction(tiles, c, walltile, floortile, avatartile);
+                // Else if in menu mode,
+                //set of whatever you do in the menu
             }
         }
     }
