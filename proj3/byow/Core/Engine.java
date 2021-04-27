@@ -65,7 +65,6 @@ public class Engine {
                 || Character.toString(input.charAt(0)).equals("l")) {
             object.takeaction(finalWorldFrame, input, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
         }
-        ter.renderFrame(finalWorldFrame);
         return finalWorldFrame;
     }
 }
