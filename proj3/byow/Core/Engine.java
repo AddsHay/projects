@@ -1,10 +1,11 @@
 package byow.Core;
 
-import byow.InputDemo.InputSource;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
+
+import java.util.Objects;
 import java.util.Random;
 
 import java.awt.*;
@@ -18,19 +19,13 @@ public class Engine {
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
      * including inputs from the main menu.
-     */
+     
     public void interactWithKeyboard() {
         reset();
         createmenu();
-        while (!exit) {
-            if (StdDraw.hasNextKeyTyped()) {
-                char c = Character.toUpperCase(StdDraw.nextKeyTyped());
-                // If in game mode,
-                //object.takeaction(tiles, c, walltile, floortile, avatartile);
-                // Else if in menu mode,
-                //set of whatever you do in the menu
-            }
-        }
+        menumode();
+        StdDraw.enableDoubleBuffering();
+        worldmode();
     }
 
     public void reset() {
@@ -62,24 +57,52 @@ public class Engine {
                     case("N"):
                         Random rand = new Random();
                         int random = rand.nextInt(1000000000);
-                        String seed = "N" + random + "s";
+                        String seed = "n" + random + "s";
                         interactWithInputString(seed);
                         exit = true;
+                        break;
                     case("L"):
-
+                        interactWithInputString("L");
                         exit = true;
+                        break;
                     case("Q"):
-
+                        interactWithInputString(":Q");
                         exit = true;
+                        break;
                     default:
                         continue;
                 }
-
             }
         }
     }
 
-    /**
+    public void worldmode() {
+        boolean exit = true;
+        while (exit) {
+            if (StdDraw.hasNextKeyTyped()) {
+                char ch = StdDraw.nextKeyTyped();
+                String c = Character.toString(Character.toUpperCase(ch));
+                interactWithInputString(c);
+                if (Objects.equals(ch, ":")) {
+                    while (true) {
+                        if (StdDraw.hasNextKeyTyped()) {
+                            if (Objects.equals(StdDraw.nextKeyTyped(), "Q")) {
+                                interactWithInputString(":Q");
+                            }
+                            break;
+                        }
+                    }
+                }
+                StdDraw.show();
+            } else {
+                exit = false;
+            }
+            break;
+        }
+    }
+
+
+
      * Method used for autograding and testing your code. The input string will be a series
      * of characters (for example, "n123sswwdasdassadwas", "n123sss:q", "lwww". The engine should
      * behave exactly as if the user typed these characters into the engine using
@@ -122,9 +145,7 @@ public class Engine {
                     Tileset.FLOOR, Long.parseLong(seed));
             object.takeaction(finalWorldFrame, commands, Tileset.WALL,
                     Tileset.FLOOR, Tileset.AVATAR);
-        }
-        if (Character.toString(input.charAt(0)).equals("L")
-                || Character.toString(input.charAt(0)).equals("l")) {
+        } else {
             object.takeaction(finalWorldFrame, input, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
         }
         ter.renderFrame(finalWorldFrame);

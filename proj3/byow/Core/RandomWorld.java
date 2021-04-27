@@ -693,14 +693,15 @@ public class RandomWorld implements Serializable {
 
     public TETile[][] takeaction(TETile[][] tiles, String commands, TETile walltile, TETile floortile, TETile avatartile) {
         if (commands.length() == 0) {
+            placeavatar(tiles, avatartile);
             return tiles;
         }
         if (!Character.toString(commands.charAt(0)).equals("L")
                 && !Character.toString(commands.charAt(0)).equals("l")) {
-            placeavatar(tiles, Tileset.AVATAR);
+            placeavatar(tiles, avatartile);
         }
         for (int i = 0; i < commands.length(); i++) {
-            if (Character.toString(commands.charAt(i)).equals("t")) {
+            if (Character.toString(commands.charAt(i)).equals("T")) {
                 togglelight(tiles, new TETile('·', new Color(128, 192, 128),
                         new Color(255, 255, 255), "light"));
             }
