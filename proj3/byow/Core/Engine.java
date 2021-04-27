@@ -5,6 +5,9 @@ import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
+import java.util.Random;
+
+import java.awt.*;
 
 public class Engine {
     TERenderer ter = new TERenderer();
@@ -17,8 +20,8 @@ public class Engine {
      * including inputs from the main menu.
      */
     public void interactWithKeyboard() {
-        /**
-        boolean exit = false;
+        reset();
+        createmenu();
         while (!exit) {
             if (StdDraw.hasNextKeyTyped()) {
                 char c = Character.toUpperCase(StdDraw.nextKeyTyped());
@@ -28,8 +31,54 @@ public class Engine {
                 //set of whatever you do in the menu
             }
         }
-         */
     }
+
+    public void reset() {
+        boolean exit = false;
+        StdDraw.setCanvasSize(WIDTH * 16, HEIGHT * 16);
+        StdDraw.setXscale(0, WIDTH);
+        StdDraw.setYscale(0, HEIGHT);
+        StdDraw.clear(Color.BLACK);
+    }
+
+    public void createmenu() {
+        StdDraw.setPenColor(Color.WHITE);
+        Font menusize = new Font("Times", Font.BOLD, 30);
+        Font textsize = new Font("Times", Font.PLAIN, 15);
+        StdDraw.setFont(menusize);
+        StdDraw.text(WIDTH / 2, HEIGHT * 2 / 3, "CS61B: THE GAME");
+        StdDraw.setFont(textsize);
+        StdDraw.text(WIDTH / 2, HEIGHT * 5 / 10, "New Game (n / N)");
+        StdDraw.text(WIDTH / 2, HEIGHT * 4.5 / 10, "Load Game (l / L)");
+        StdDraw.text(WIDTH / 2, HEIGHT * 4 / 10, "Quit Game (q / Q)");
+    }
+
+    public void menumode() {
+        boolean exit = false;
+        while (!exit) {
+            if (StdDraw.hasNextKeyTyped()) {
+                String c = Character.toString(Character.toUpperCase(StdDraw.nextKeyTyped()));
+                switch (c) {
+                    case("N"):
+                        Random rand = new Random();
+                        int random = rand.nextInt(1000000000);
+                        String seed = "N" + random + "s";
+                        interactWithInputString(seed);
+                        exit = true;
+                    case("L"):
+
+                        exit = true;
+                    case("Q"):
+
+                        exit = true;
+                    default:
+                        continue;
+                }
+
+            }
+        }
+    }
+
     /**
      * Method used for autograding and testing your code. The input string will be a series
      * of characters (for example, "n123sswwdasdassadwas", "n123sss:q", "lwww". The engine should
