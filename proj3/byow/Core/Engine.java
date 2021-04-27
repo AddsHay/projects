@@ -40,6 +40,7 @@ public class Engine {
      * take off the na nd the s and then parse long of the remainder
      */
     public TETile[][] interactWithInputString(String input) {
+        ter.initialize(WIDTH, HEIGHT);
         TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
         String inputseed = null;
         String commands = null;
@@ -64,6 +65,7 @@ public class Engine {
                 || Character.toString(input.charAt(0)).equals("l")) {
             object.takeaction(finalWorldFrame, input, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
         }
+        ter.renderFrame(finalWorldFrame);
         return finalWorldFrame;
     }
 }
