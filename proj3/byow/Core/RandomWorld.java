@@ -115,7 +115,7 @@ public class RandomWorld implements Serializable {
         SEED = inputseed;
         RANDOM = new Random(SEED);
         fillWithNothing(tiles);
-        Pos p = new Pos(RandomUtils.uniform(RANDOM, 10, WIDTH - 10), RandomUtils.uniform(RANDOM, 10, HEIGHT - 10));
+        Pos p = new Pos(RandomUtils.uniform(RANDOM, 20, WIDTH - 20), RandomUtils.uniform(RANDOM, 20, HEIGHT - 20));
         Pos pz = new Pos(p.x + 1, p.y + 1);
         int dx = createdimension(p.x, WIDTH);
         int dy = createdimension(p.y, HEIGHT);
@@ -179,7 +179,7 @@ public class RandomWorld implements Serializable {
         }
         // Add new Steps
         if (RandomUtils.uniform(RANDOM) > base.zero) {
-            for (int i = RandomUtils.uniform(RANDOM, 0, 4); i > 0; i--) {
+            for (int i = RandomUtils.uniform(RANDOM, 0, 5); i > 0; i--) {
                 Steps next = stepmaker(base);
                 Steps now = new Steps(next.next, next.last, next.tile, next.wall, next.floor, next.p, next.pz,
                         next.dx, next.dy, next.zero, next.structure, next.direction);
