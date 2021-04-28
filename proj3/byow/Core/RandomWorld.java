@@ -185,7 +185,7 @@ public class RandomWorld implements Serializable {
         }
         // Add new Steps
         if (RandomUtils.uniform(RANDOM) > base.zero) {
-            for (int i = RandomUtils.uniform(RANDOM, 0, 6); i > 0; i--) {
+            for (int i = RandomUtils.uniform(RANDOM, 0, 7); i > 0; i--) {
                 Steps next = stepmaker(base);
                 Steps now = new Steps(next.next, next.last, next.tile, next.wall, next.floor, next.p, next.pz,
                         next.dx, next.dy, next.zero, next.structure, next.direction);
@@ -638,7 +638,7 @@ public class RandomWorld implements Serializable {
             a.direction = "o";
         }
         // Choose structure
-        if (RandomUtils.uniform(RANDOM, 5) < 1) {
+        if (RandomUtils.uniform(RANDOM, 4) < 1) {
             // room
             a.structure = "room";
             a.dx = RandomUtils.uniform(RANDOM, 3, 10);

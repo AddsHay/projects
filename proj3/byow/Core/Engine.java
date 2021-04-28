@@ -160,16 +160,41 @@ public class Engine {
         while (exit) {
             int mx = (int)StdDraw.mouseX();
             int my = (int)StdDraw.mouseY();
+            if (mx > 49) {
+                mx = 49;
+            }
+            if (mx < 1) {
+                mx = 1;
+            }
+            if (my > 49) {
+                my = 49;
+            }
+            if (my < 1) {
+                my = 1;
+            }
             TETile hovering = finalWorldFrame[mx][my];
             if (Tileset.WALL.equals(hovering)) {
+                ter.renderFrame(finalWorldFrame);
+                StdDraw.enableDoubleBuffering();
+                StdDraw.setPenColor(Color.WHITE);
                 StdDraw.textLeft(WIDTH / 10, HEIGHT - 1, "Wall");
             } else if (Tileset.NOTHING.equals(hovering)) {
+                ter.renderFrame(finalWorldFrame);
+                StdDraw.enableDoubleBuffering();
+                StdDraw.setPenColor(Color.WHITE);
                 StdDraw.textLeft(WIDTH / 10, HEIGHT - 1, "Nothing");
             } else if (avatartile.equals(hovering)) {
+                ter.renderFrame(finalWorldFrame);
+                StdDraw.enableDoubleBuffering();
+                StdDraw.setPenColor(Color.WHITE);
                 StdDraw.textLeft(WIDTH / 10, HEIGHT - 1, "You!");
             } else if (Tileset.FLOOR.equals(hovering)) {
+                ter.renderFrame(finalWorldFrame);
+                StdDraw.enableDoubleBuffering();
+                StdDraw.setPenColor(Color.WHITE);
                 StdDraw.textLeft(WIDTH / 10, HEIGHT - 1, "Floor");
             }
+            StdDraw.show();
             if (StdDraw.hasNextKeyTyped()) {
                 char ch = StdDraw.nextKeyTyped();
                 String c = Character.toString(Character.toUpperCase(ch));
@@ -187,8 +212,10 @@ public class Engine {
                     interactWithInputString(cmds);
                 } else {
                     cmds += c;
-                    System.out.println(cmds);
+                    ter.renderFrame(finalWorldFrame);
+                    StdDraw.enableDoubleBuffering();
                     interactWithInputString(c);
+                    StdDraw.show();
                 }
             }
         }
