@@ -22,6 +22,7 @@ public class RandomWorld implements Serializable {
     public ArrayList<Integer> lights = new ArrayList();
     public ArrayList<Integer> floors = new ArrayList();
     public Pos avatarpos = new Pos(0,0);
+    public TETile type = Tileset.FLOOR;
 
     private class Pos {
         int x;
@@ -184,7 +185,7 @@ public class RandomWorld implements Serializable {
         }
         // Add new Steps
         if (RandomUtils.uniform(RANDOM) > base.zero) {
-            for (int i = RandomUtils.uniform(RANDOM, 0, 4); i > 0; i--) {
+            for (int i = RandomUtils.uniform(RANDOM, 0, 6); i > 0; i--) {
                 Steps next = stepmaker(base);
                 Steps now = new Steps(next.next, next.last, next.tile, next.wall, next.floor, next.p, next.pz,
                         next.dx, next.dy, next.zero, next.structure, next.direction);
@@ -687,6 +688,7 @@ public class RandomWorld implements Serializable {
         int com = floors.get(RandomUtils.uniform(RANDOM, floors.size()));
         int x = com % WIDTH;
         int y = com / WIDTH + 1;
+        type = tiles[x][y];
         tiles[x][y] = avatartile;
         avatarpos = new Pos(x, y);
     }
@@ -696,8 +698,8 @@ public class RandomWorld implements Serializable {
             placeavatar(tiles, avatartile);
             return tiles;
         }
-        if (!Character.toString(commands.charAt(0)).equals("L")
-                && !Character.toString(commands.charAt(0)).equals("l")) {
+        if (Character.toString(commands.charAt(0)).equals("N")
+                && Character.toString(commands.charAt(0)).equals("n")) {
             placeavatar(tiles, avatartile);
         }
         for (int i = 0; i < commands.length(); i++) {
@@ -707,29 +709,33 @@ public class RandomWorld implements Serializable {
             }
             if (Character.toString(commands.charAt(i)).equals("W")) {
                 if (tiles[avatarpos.x][avatarpos.y + 1] != walltile) {
-                    tiles[avatarpos.x][avatarpos.y] = floortile;
+                    tiles[avatarpos.x][avatarpos.y] = type;
                     avatarpos.y += 1;
+                    type = tiles[avatarpos.x][avatarpos.y];
                     tiles[avatarpos.x][avatarpos.y] = avatartile;
                 }
             }
             if (Character.toString(commands.charAt(i)).equals("A")) {
                 if (tiles[avatarpos.x - 1][avatarpos.y] != walltile) {
-                    tiles[avatarpos.x][avatarpos.y] = floortile;
+                    tiles[avatarpos.x][avatarpos.y] = type;
                     avatarpos.x += -1;
+                    type = tiles[avatarpos.x][avatarpos.y];
                     tiles[avatarpos.x][avatarpos.y] = avatartile;
                 }
             }
             if (Character.toString(commands.charAt(i)).equals("S")) {
                 if (tiles[avatarpos.x][avatarpos.y - 1] != walltile) {
-                    tiles[avatarpos.x][avatarpos.y] = floortile;
+                    tiles[avatarpos.x][avatarpos.y] = type;
                     avatarpos.y -= 1;
+                    type = tiles[avatarpos.x][avatarpos.y];
                     tiles[avatarpos.x][avatarpos.y] = avatartile;
                 }
             }
             if (Character.toString(commands.charAt(i)).equals("D")) {
                 if (tiles[avatarpos.x + 1][avatarpos.y] != walltile) {
-                    tiles[avatarpos.x][avatarpos.y] = floortile;
+                    tiles[avatarpos.x][avatarpos.y] = type;
                     avatarpos.x += 1;
+                    type = tiles[avatarpos.x][avatarpos.y];
                     tiles[avatarpos.x][avatarpos.y] = avatartile;
                 }
             }
@@ -759,7 +765,8 @@ public class RandomWorld implements Serializable {
                     }
                 }
                 drawbuild(tiles, Tileset.WALL, Tileset.FLOOR, Long.parseLong(inputseed));
-                takeaction(tiles, oldcmd, Tileset.WALL, Tileset.FLOOR, Tileset.AVATAR);
+                placeavatar(tiles, avatartile);
+                takeaction(tiles, oldcmd + commands.substring(1), Tileset.WALL, Tileset.FLOOR, avatartile);
                 } else {
                     continue;
                 }
@@ -767,21 +774,16 @@ public class RandomWorld implements Serializable {
         return tiles;
     }
 
-    public void placelight(TETile[][] tiles, TETile lighttile) {
+    public void placelight(TETile[][] tiles) {
         Pos p = new Pos(RandomUtils.uniform(RANDOM, 3, WIDTH - 3), RandomUtils.uniform(RANDOM, 3, HEIGHT - 3));
         if (tiles[p.x][p.y] != Tileset.FLOOR) {
-            placelight(tiles, lighttile);
+            placelight(tiles);
         } else {
-            tiles[p.x][p.y] = lighttile;
             lights.add(((p.y - 1) * WIDTH) + p.x);
         }
     }
 
-    /** pass in  as lighttile:
-     * TETile Light = new TETile('·', new Color(128, 192, 128), new Color(255, 255, 255),
-     *             "light)
-     */
-    public void togglelight(TETile[][] tiles, TETile lighttile) {
+    public void generatelights(TETile[][] tiles) {
         int floorcount = 0;
         for (int x = 0; x < WIDTH; x += 1) {
             for (int y = 0; y < HEIGHT; y += 1) {
@@ -791,14 +793,28 @@ public class RandomWorld implements Serializable {
             }
         }
         for (int x = 0; x < floorcount / 49; x++) {
-            placelight(tiles, lighttile);
+            placelight(tiles);
         }
+    }
+
+    /** pass in  as lighttile:
+     * TETile Light = new TETile('·', new Color(128, 192, 128), new Color(255, 255, 255),
+     *             "light)
+     */
+    public void togglelight(TETile[][] tiles, TETile lighttile) {
         for (Integer light : lights) {
             int x = light % WIDTH;
             int y = light / WIDTH + 1;
+            if (tiles[x][y] == Tileset.FLOOR) {
+                tiles[x][y] = lighttile;
+            } else {
+                tiles[x][y] = Tileset.FLOOR;
+            }
+            /**
             for (int xstart = x - 4; xstart < 10; xstart += 1) {
                 for (int ystart = y - 4; ystart < 10; ystart += 1) {
                     if (tiles[x][y].isBlack()) {
+                        tiles[x][y] = lighttile;
                         if (tiles[xstart][ystart] == Tileset.FLOOR) {
                             int dx = x - xstart;
                             int dy = y - ystart;
@@ -817,6 +833,7 @@ public class RandomWorld implements Serializable {
                     }
                 }
             }
+            */
         }
     }
 
