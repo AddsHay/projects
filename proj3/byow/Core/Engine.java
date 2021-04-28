@@ -59,7 +59,7 @@ public class Engine {
         boolean exit = false;
         reset();
         StdDraw.setPenColor(Color.WHITE);
-        StdDraw.text(WIDTH / 2, HEIGHT * 2 / 3, "Please enter seed");
+        StdDraw.text(WIDTH / 2, HEIGHT * 2 / 3, "Please enter seed (Press 's' to confirm)");
         while (!exit) {
             if (StdDraw.hasNextKeyTyped()) {
                 char c = (Character.toUpperCase(StdDraw.nextKeyTyped()));
@@ -67,10 +67,11 @@ public class Engine {
                     seed += Character.toString(c);
                     reset();
                     StdDraw.setPenColor(Color.WHITE);
-                    StdDraw.text(WIDTH / 2, HEIGHT * 2 / 3, "Please enter seed");
+                    StdDraw.text(WIDTH / 2, HEIGHT * 2 / 3, "Please enter seed (Press 's' to confirm)");
                     StdDraw.text(WIDTH / 2, HEIGHT * 1 / 3, seed);
                 }
                 if (Character.toString(c).equals("S")) {
+                    ter.initialize(WIDTH, HEIGHT + 2);
                     interactWithInputString("n" + seed + "s");
                     exit = true;
                 }
@@ -82,16 +83,21 @@ public class Engine {
         boolean exit = false;
         reset();
         StdDraw.setPenColor(Color.WHITE);
-        StdDraw.text(WIDTH / 2, HEIGHT * 2 / 3, "Please enter a name");
+        StdDraw.text(WIDTH / 2, HEIGHT * 2 / 3, "Please enter a name (Press 0 to confirm)");
         while (!exit) {
             if (StdDraw.hasNextKeyTyped()) {
                 char c = (StdDraw.nextKeyTyped());
-                name += Character.toString(c);
+                if (!Character.toString(c).equals("0")) {
+                    name += Character.toString(c);
+                }
                 reset();
+                StdDraw.enableDoubleBuffering();
                 StdDraw.setPenColor(Color.WHITE);
-                StdDraw.text(WIDTH / 2, HEIGHT * 2 / 3, "Please enter a name");
+                StdDraw.text(WIDTH / 2, HEIGHT * 2 / 3, "Please enter a name (Press 0 to confirm)");
                 StdDraw.text(WIDTH / 2, HEIGHT * 1 / 3, name);
+                StdDraw.show();
                 if (Character.toString(c).equals("0")) {
+                    StdDraw.disableDoubleBuffering();
                     exit = true;
                 }
             }
@@ -158,7 +164,6 @@ public class Engine {
                         exit = true;
                         break;
                     case("N"):
-                        ter.initialize(WIDTH, HEIGHT + 2);
                         seedscreen();
                         exit = true;
                         break;
@@ -203,27 +208,30 @@ public class Engine {
                 my = 1;
             }
             TETile hovering = finalWorldFrame[mx][my];
-            StdDraw.textLeft(WIDTH / 10, HEIGHT - 2, name);
             if (Tileset.WALL.equals(hovering)) {
                 ter.renderFrame(finalWorldFrame);
                 StdDraw.enableDoubleBuffering();
                 StdDraw.setPenColor(Color.WHITE);
                 StdDraw.textLeft(WIDTH / 10, HEIGHT - 1, "Wall");
+                StdDraw.textLeft(WIDTH / 10, HEIGHT - 2, name);
             } else if (Tileset.NOTHING.equals(hovering)) {
                 ter.renderFrame(finalWorldFrame);
                 StdDraw.enableDoubleBuffering();
                 StdDraw.setPenColor(Color.WHITE);
                 StdDraw.textLeft(WIDTH / 10, HEIGHT - 1, "Nothing");
+                StdDraw.textLeft(WIDTH / 10, HEIGHT - 2, name);
             } else if (avatartile.equals(hovering)) {
                 ter.renderFrame(finalWorldFrame);
                 StdDraw.enableDoubleBuffering();
                 StdDraw.setPenColor(Color.WHITE);
                 StdDraw.textLeft(WIDTH / 10, HEIGHT - 1, "You!");
+                StdDraw.textLeft(WIDTH / 10, HEIGHT - 2, name);
             } else if (Tileset.FLOOR.equals(hovering)) {
                 ter.renderFrame(finalWorldFrame);
                 StdDraw.enableDoubleBuffering();
                 StdDraw.setPenColor(Color.WHITE);
                 StdDraw.textLeft(WIDTH / 10, HEIGHT - 1, "Floor");
+                StdDraw.textLeft(WIDTH / 10, HEIGHT - 2, name);
             }
             StdDraw.show();
             if (StdDraw.hasNextKeyTyped()) {
