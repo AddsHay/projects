@@ -19,6 +19,7 @@ public class Engine {
     TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
     String seed = "";
     String cmds = "";
+    String name = "";
     TETile avatartile = Tileset.AVATAR;
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -50,7 +51,8 @@ public class Engine {
         StdDraw.text(WIDTH / 2, HEIGHT * 5 / 10, "Random Game (r / R)");
         StdDraw.text(WIDTH / 2, HEIGHT * 4.5 / 10, "Load Game (l / L)");
         StdDraw.text(WIDTH / 2, HEIGHT * 4 / 10, "Quit Game (q / Q)");
-        StdDraw.text(WIDTH / 2, HEIGHT * 3.5 / 10, "Switch avatar (p / P)");
+        StdDraw.text(WIDTH / 2, HEIGHT * 3.5 / 10, "Switch avatar icon (p / P)");
+        StdDraw.text(WIDTH / 2, HEIGHT * 3 / 10, "Set avatar name (b / B)");
     }
 
     public void seedscreen() {
@@ -74,6 +76,28 @@ public class Engine {
                 }
             }
         }
+    }
+
+    public void avatarname() {
+        boolean exit = false;
+        reset();
+        StdDraw.setPenColor(Color.WHITE);
+        StdDraw.text(WIDTH / 2, HEIGHT * 2 / 3, "Please enter a name");
+        while (!exit) {
+            if (StdDraw.hasNextKeyTyped()) {
+                char c = (StdDraw.nextKeyTyped());
+                name += Character.toString(c);
+                reset();
+                StdDraw.setPenColor(Color.WHITE);
+                StdDraw.text(WIDTH / 2, HEIGHT * 2 / 3, "Please enter a name");
+                StdDraw.text(WIDTH / 2, HEIGHT * 1 / 3, name);
+                if (Character.toString(c).equals("0")) {
+                    exit = true;
+                }
+            }
+        }
+        reset();
+        createmenu();
     }
 
     public void avatarscreen() {
@@ -150,6 +174,9 @@ public class Engine {
                     case ("P"):
                         avatarscreen();
                         break;
+                    case("B"):
+                        avatarname();
+                        break;
                     default:
                         continue;
                 }
@@ -176,6 +203,7 @@ public class Engine {
                 my = 1;
             }
             TETile hovering = finalWorldFrame[mx][my];
+            StdDraw.textLeft(WIDTH / 10, HEIGHT - 2, name);
             if (Tileset.WALL.equals(hovering)) {
                 ter.renderFrame(finalWorldFrame);
                 StdDraw.enableDoubleBuffering();
