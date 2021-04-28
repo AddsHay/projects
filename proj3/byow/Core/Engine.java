@@ -126,6 +126,7 @@ public class Engine {
                 String c = Character.toString(Character.toUpperCase(StdDraw.nextKeyTyped()));
                 switch (c) {
                     case("R"):
+                        ter.initialize(WIDTH, HEIGHT + 2);
                         Random rand = new Random();
                         int random = rand.nextInt(1000000000);
                         String seed = "n" + random + "s";
@@ -133,10 +134,12 @@ public class Engine {
                         exit = true;
                         break;
                     case("N"):
+                        ter.initialize(WIDTH, HEIGHT + 2);
                         seedscreen();
                         exit = true;
                         break;
                     case("L"):
+                        ter.initialize(WIDTH, HEIGHT + 2);
                         interactWithInputString("L");
                         exit = true;
                         break;
@@ -249,7 +252,6 @@ public class Engine {
      * take off the na nd the s and then parse long of the remainder
      */
     public TETile[][] interactWithInputString(String input) {
-        ter.initialize(WIDTH, HEIGHT + 2);
         String inputseed = null;
         String commands = null;
         String seed = null;
